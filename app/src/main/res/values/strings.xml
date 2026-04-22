@@ -1,0 +1,61 @@
+<resources>
+    <string name="app_name">DocumentsHub</string>
+    <string name="login_title">DocumentHub</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Mật khẩu</string>
+    <string name="btn_login">Login</string>
+    <string name="forgot_password">Forgot password</string>
+    <string name="dont_have_account">Don\'t have an account? </string>
+    <string name="sign_up_here">Sign up here</string>
+    <string name="show_password">Show</string>
+    
+    <string name="hint_search">Search documents...</string>
+    <string name="trending_in">Trending in </string>
+    <string name="see_all">See all</string>
+    <string name="nav_home">Home</string>
+    <string name="nav_upload">Upload</string>
+    <string name="nav_profile">Profile</string>
+    <string name="cat_computer">Computer</string>
+    <string name="cat_programming">Programming</string>
+    <string name="cat_science">Science</string>
+
+    <string name="title_upload_document">Upload Document</string>
+    <string name="label_title">Title</string>
+    <string name="label_description">Description</string>
+    <string name="label_file">File</string>
+    <string name="label_visibility">Visibility</string>
+    <string name="label_category">Category</string>
+    <string name="label_tags">Tags</string>
+    <string name="btn_select_file">Select file *</string>
+    <string name="btn_upload_doc">Upload</string>
+    <string name="hint_tags">Add tags separate by \' \' or \',\'</string>
+    <string name="hint_enter_title">Nhập tiêu đề tài liệu...</string>
+    <string name="hint_enter_description">Nhập mô tả tài liệu...</string>
+    <string name="btn_logout">Logout</string>
+    <string name="btn_edit_profile">Edit profile</string>
+    <string name="label_overview">Overview</string>
+    <string name="label_documents">Documents</string>
+    <string name="label_collections">Collections</string>
+    <string name="label_liked">Liked</string>
+    <string name="label_trash">Trash</string>
+    <string name="dummy_user_name">Lê Ngọc Tú</string>
+    <string name="dummy_user_handle">tule193</string>
+    <string name="dummy_user_pronouns">he/him</string>
+    <string name="dummy_user_bio">Giới thiệu về bản thân.....</string>
+    <string name="title_edit_profile">Edit Profile</string>
+    <string name="label_full_name">Full name</string>
+    <string name="label_gender">Gender</string>
+    <string name="label_bio">Bio</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="btn_save_changes">Save changes</string>
+
+    <string name="label_post_by">Post by </string>
+    <string name="label_similar">Similar</string>
+    <string name="label_similar_documents">Similar Documents</string>
+    <string name="dummy_document_title">Kiến trúc phần mềm</string>
+    <string name="dummy_document_description">Bài tập kiến trúc phần mềm, Java EJB , .NET</string>
+    <string name="dummy_page_count">11</string>
+    <string name="dummy_zoom_percent">100%</string>
+    <string name="dummy_views">0</string>
+    <string name="dummy_likes">0</string>
+</resources>
