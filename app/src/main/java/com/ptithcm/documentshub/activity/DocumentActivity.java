@@ -8,10 +8,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import com.ptithcm.documentshub.R;
 import com.ptithcm.documentshub.adapter.SimilarDocumentAdapter;
 import com.ptithcm.documentshub.model.Document;
 import com.ptithcm.documentshub.utils.NonScrollListView;
+import com.ptithcm.documentshub.viewmodel.DocumentViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +36,8 @@ public class DocumentActivity extends AppCompatActivity {
     private NonScrollListView lvSimilarDocuments;
 
     private boolean isDescriptionExpanded = true;
+    private DocumentViewModel viewModel;
+    private SimilarDocumentAdapter similarAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +45,13 @@ public class DocumentActivity extends AppCompatActivity {
         setContentView(R.layout.activity_document);
 
         initViews();
-        setupData();
+        setupViewModel();
         setupListeners();
+        
+        // Giả sử nhận ID từ Intent (tạm thời để cứng "1" để test)
+        String documentId = getIntent().getStringExtra("DOCUMENT_ID");
+        if (documentId == null) documentId = "1";
+        viewModel.fetchDocumentDetail(documentId);
     }
 
     private void initViews() {
@@ -61,16 +70,33 @@ public class DocumentActivity extends AppCompatActivity {
         ivDescriptionArrow = findViewById(R.id.iv_description_arrow);
         tvDescription = findViewById(R.id.tv_description);
         lvSimilarDocuments = findViewById(R.id.lv_similar_documents);
+        
+        // Khởi tạo adapter trống
+        similarAdapter = new SimilarDocumentAdapter(this, new ArrayList<>());
+        lvSimilarDocuments.setAdapter(similarAdapter);
     }
 
-    private void setupData() {
-        // Set document info (dummy for now)
-        String title = getString(R.string.dummy_document_title);
-        tvDocumentTitle.setText(title);
-        tvToolbarTitle.setText(title);
-        tvPostBy.setText(getString(R.string.label_post_by) + "tule193");
+    private void setupViewModel() {
+        viewModel = new ViewModelProvider(this).get(DocumentViewModel.class);
+        
+        viewModel.getDocument().observe(this, this::updateUI);
+        
+        viewModel.getSimilarDocuments().observe(this, documents -> {
+            if (documents != null) {
+                similarAdapter.updateData(documents);
+            }
+        });
+    }
 
-        // Add dummy tags
+    private void updateUI(Document document) {
+        if (document == null) return;
+
+        tvDocumentTitle.setText(document.getTitle());
+        tvToolbarTitle.setText(document.getTitle());
+        tvPostBy.setText(getString(R.string.label_post_by) + (document.getAuthor() != null ? document.getAuthor() : "Anonymous"));
+        tvDescription.setText(document.getDescription());
+
+        // Cập nhật Tags (Dummy tags nếu model chưa có field tags)
         String[] tags = {"#oop", "#dotnet", "#java", "#ejb"};
         layoutTags.removeAllViews();
         for (String tag : tags) {
@@ -79,15 +105,13 @@ public class DocumentActivity extends AppCompatActivity {
             tvTag.setText(tag);
             layoutTags.addView(tagView);
         }
-
-        // Similar Documents List
-        List<Document> similarDocs = new ArrayList<>();
-        similarDocs.add(new Document("Design Patterns", "gof_master", "Public", 18, "Software"));
-        similarDocs.add(new Document("UML Diagrams", "uml_pro", "Public", 9, "Software"));
-        similarDocs.add(new Document("Clean Code", "uncle_bob", "Public", 25, "Software"));
-
-        SimilarDocumentAdapter adapter = new SimilarDocumentAdapter(this, similarDocs);
-        lvSimilarDocuments.setAdapter(adapter);
+        
+        // Cập nhật số lượng download, like nếu cần
+        TextView tvDownloadCount = btnDownload.findViewById(R.id.tv_download_count);
+        if (tvDownloadCount != null) tvDownloadCount.setText(String.valueOf(document.getDownloads()));
+        
+        TextView tvLikeCount = btnLike.findViewById(R.id.tv_like_count);
+        if (tvLikeCount != null) tvLikeCount.setText(String.valueOf(document.getLikes()));
     }
 
     private void setupListeners() {
@@ -99,20 +123,7 @@ public class DocumentActivity extends AppCompatActivity {
             ivDescriptionArrow.setRotation(isDescriptionExpanded ? 0 : 180);
         });
 
-        btnDownload.setOnClickListener(v -> {
-            // Handle download
-        });
-
-        btnLike.setOnClickListener(v -> {
-            // Handle like
-        });
-
-        btnSave.setOnClickListener(v -> {
-            // Handle save
-        });
-
         btnSimilar.setOnClickListener(v -> {
-            // Scroll to similar documents
             lvSimilarDocuments.getParent().requestChildFocus(lvSimilarDocuments, lvSimilarDocuments);
         });
     }

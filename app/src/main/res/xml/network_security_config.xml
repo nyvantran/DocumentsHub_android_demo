@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <!-- Cho phép kết nối HTTP đến localhost của máy tính qua IP của Emulator -->
+        <domain includeSubdomains="true">10.0.2.2</domain>
+        <!-- Cho phép localhost nếu bạn chạy trên thiết bị thật qua proxy hoặc môi trường local khác -->
+        <domain includeSubdomains="true">localhost</domain>
+    </domain-config>
+</network-security-config>

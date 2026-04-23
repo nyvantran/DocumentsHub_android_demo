@@ -24,6 +24,11 @@ public class CategorySectionAdapter extends BaseAdapter {
         this.categories = categories;
     }
 
+    public void updateData(List<Category> newCategories) {
+        this.categories = newCategories;
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getCount() {
         return categories.size();

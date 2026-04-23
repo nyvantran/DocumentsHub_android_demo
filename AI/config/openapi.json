@@ -1,0 +1,6735 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "FastAPI",
+    "summary": "Hello World!",
+    "description": "Some description...",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "tags": [
+          "Health Check"
+        ],
+        "summary": "Health Check",
+        "operationId": "health_check_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseSuccessSchema"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/reports": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Get Reported Document",
+        "operationId": "get_reported_document_api_v1_admin_reports_get",
+        "security": [
+          {
+            "AccessTokenCookie": []
+          },
+          {
+            "AccessTokenHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Page number",
+              "default": 1,
+              "title": "Page"
+            },
+            "description": "Page number"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "description": "Maximum number of items per page",
+              "default": 10,
+              "title": "Limit"
+            },
+            "description": "Maximum number of items per page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponsePaginationSchema_ReportedDocumentSchema_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/reports/documents/{document_id}": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "List Pending Report Of Documents",
+        "operationId": "list_pending_report_of_documents_api_v1_admin_reports_documents__document_id__get",
+        "security": [
+          {
+            "AccessTokenCookie": []
+          },
+          {
+            "AccessTokenHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Document Id"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Page number",
+              "default": 1,
+              "title": "Page"
+            },
+            "description": "Page number"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "description": "Maximum number of items per page",
+              "default": 10,
+              "title": "Limit"
+            },
+            "description": "Maximum number of items per page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponsePaginationSchema_ReportSchema_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Handle Report",
+        "operationId": "handle_report_api_v1_admin_reports_documents__document_id__post",
+        "security": [
+          {
+            "AccessTokenCookie": []
+          },
+          {
+            "AccessTokenHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Document Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReportHandleRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseSuccessSchema"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/documents": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Get Documents",
+        "operationId": "get_documents_api_v1_admin_documents_get",
+        "security": [
+          {
+            "AccessTokenCookie": []
+          },
+          {
+            "AccessTokenHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Page number",
+              "default": 1,
+              "title": "Page"
+            },
+            "description": "Page number"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "description": "Maximum number of items per page",
+              "default": 10,
+              "title": "Limit"
+            },
+            "description": "Maximum number of items per page"
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Search query, default None",
+              "title": "Q"
+            },
+            "description": "Search query, default None"
+          },
+          {
+            "name": "owner",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "owner's username",
+              "title": "Owner"
+            },
+            "description": "owner's username"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/DocumentStatus"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          },
+          {
+            "name": "visibility",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/DocumentVisibility"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Visibility"
+            }
+          },
+          {
+            "name": "category_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Lọc theo ID danh mục",
+              "title": "Category Id"
+            },
+            "description": "Lọc theo ID danh mục"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponsePaginationSchema_DocumentSummarySchema_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/documents/{document_id}": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Get Document Details",
+        "operationId": "get_document_details_api_v1_admin_documents__document_id__get",
+        "security": [
+          {
+            "AccessTokenCookie": []
+          },
+          {
+            "AccessTokenHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Document Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseSuccessSchema_DocumentDetailsSchema_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/documents/{document_id}/unban": {
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Unban Document",
+        "operationId": "unban_document_api_v1_admin_documents__document_id__unban_post",
+        "security": [
+          {
+            "AccessTokenCookie": []
+          },
+          {
+            "AccessTokenHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Document Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseSuccessSchema"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/users": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Get User List",
+        "operationId": "get_user_list_api_v1_admin_users_get",
+        "security": [
+          {
+            "AccessTokenCookie": []
+          },
+          {
+            "AccessTokenHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Page number",
+              "default": 1,
+              "title": "Page"
+            },
+            "description": "Page number"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "description": "Maximum number of items per page",
+              "default": 10,
+              "title": "Limit"
+            },
+            "description": "Maximum number of items per page"
+          },
+          {
+            "name": "username",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Username"
+            }
+          },
+          {
+            "name": "email",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Email"
+            }
+          },
+          {
+            "name": "is_active",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Is Active"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponsePaginationSchema_UserPrivateProfileSchema_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/users/{user_id}/ban": {
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Ban",
+        "operationId": "ban_api_v1_admin_users__user_id__ban_post",
+        "security": [
+          {
+            "AccessTokenCookie": []
+          },
+          {
+            "AccessTokenHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "User Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_ban_api_v1_admin_users__user_id__ban_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseSuccessSchema"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/users/{user_id}/unban": {
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Unban",
+        "operationId": "unban_api_v1_admin_users__user_id__unban_post",
+        "security": [
+          {
+            "AccessTokenCookie": []
+          },
+          {
+            "AccessTokenHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "User Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseSuccessSchema"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/categories": {
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Create Category",
+        "operationId": "create_category_api_v1_admin_categories_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_create_category_api_v1_admin_categories_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseSuccessSchema"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AccessTokenCookie": []
+          },
+          {
+            "AccessTokenHeader": []
+          }
+        ]
+      }
+    },
+    "/api/v1/admin/categories/{category_id}": {
+      "patch": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Rename Category",
+        "operationId": "rename_category_api_v1_admin_categories__category_id__patch",
+        "security": [
+          {
+            "AccessTokenCookie": []
+          },
+          {
+            "AccessTokenHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "category_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Category Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_rename_category_api_v1_admin_categories__category_id__patch"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseSuccessSchema"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Delete Category",
+        "description": "Delete category. Return error if category is used",
+        "operationId": "delete_category_api_v1_admin_categories__category_id__delete",
+        "security": [
+          {
+            "AccessTokenCookie": []
+          },
+          {
+            "AccessTokenHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "category_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Category Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseSuccessSchema"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/categories": {
+      "get": {
+        "tags": [
+          "Categories"
+        ],
+        "summary": "Get Available Categories",
+        "operationId": "get_available_categories_api_v1_categories_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseSuccessSchema_list_CategorySchema__"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/whoami": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Get self info(require login or return error)",
+        "operationId": "whoami_api_v1_auth_whoami_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseSuccessSchema_MeResponse_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error 401",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                },
+                "examples": {
+                  "UNAUTHORIZED_ERROR": {
+                    "summary": "UNAUTHORIZED_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "UNAUTHORIZED_ERROR",
+                      "message": "User not login"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AccessTokenCookie": []
+          },
+          {
+            "AccessTokenHeader": []
+          }
+        ]
+      }
+    },
+    "/api/v1/auth/register/request": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Request registration, provide email to get otp code",
+        "operationId": "request_registration_api_v1_auth_register_request_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseSuccessSchema"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Error 409",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                },
+                "examples": {
+                  "RESOURCE_ALREADY_EXISTS": {
+                    "summary": "RESOURCE_ALREADY_EXISTS",
+                    "value": {
+                      "success": false,
+                      "error_code": "RESOURCE_ALREADY_EXISTS",
+                      "message": "Email already exists"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error 422",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                },
+                "examples": {
+                  "VALIDATION_ERROR": {
+                    "summary": "VALIDATION_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "VALIDATION_ERROR",
+                      "message": "Validation error"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/register/verify": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Verify by otp code received from email",
+        "operationId": "verify_registration_api_v1_auth_register_verify_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterVerifyRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseSuccessSchema_RegisterVerifyResponse_"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error 400",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                },
+                "examples": {
+                  "INVALID_CODE": {
+                    "summary": "INVALID_CODE",
+                    "value": {
+                      "success": false,
+                      "error_code": "INVALID_CODE",
+                      "message": "OTP not match or expired"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error 422",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                },
+                "examples": {
+                  "VALIDATION_ERROR": {
+                    "summary": "VALIDATION_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "VALIDATION_ERROR",
+                      "message": "Validation error"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/register/complete": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Complete registration and automatic login",
+        "operationId": "complete_registration_api_v1_auth_register_complete_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterCompleteRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseSuccessSchema_LoginResponse_"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Error 409",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                },
+                "examples": {
+                  "RESOURCE_ALREADY_EXISTS": {
+                    "summary": "RESOURCE_ALREADY_EXISTS",
+                    "value": {
+                      "success": false,
+                      "error_code": "RESOURCE_ALREADY_EXISTS",
+                      "message": "Username already exist"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error 400",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                },
+                "examples": {
+                  "INVALID_CODE": {
+                    "summary": "INVALID_CODE",
+                    "value": {
+                      "success": false,
+                      "error_code": "INVALID_CODE",
+                      "message": "Registration code not match or expired"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error 422",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                },
+                "examples": {
+                  "VALIDATION_ERROR": {
+                    "summary": "VALIDATION_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "VALIDATION_ERROR",
+                      "message": "Validation error"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Login",
+        "description": "Write JWT token to cookie(for web client) and return token in response data(for mobile client)",
+        "operationId": "login_api_v1_auth_login_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseSuccessSchema_LoginResponse_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error 401",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                },
+                "examples": {
+                  "LOGIN_FAILED": {
+                    "summary": "LOGIN_FAILED",
+                    "value": {
+                      "success": false,
+                      "error_code": "LOGIN_FAILED",
+                      "message": "Identity or password not match"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Error 403",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                },
+                "examples": {
+                  "USER_NOT_ACTIVE": {
+                    "summary": "USER_NOT_ACTIVE",
+                    "value": {
+                      "success": false,
+                      "error_code": "USER_NOT_ACTIVE",
+                      "message": "User is inactive(User was banned"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error 422",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                },
+                "examples": {
+                  "VALIDATION_ERROR": {
+                    "summary": "VALIDATION_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "VALIDATION_ERROR",
+                      "message": "Validation error"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/logout": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Logout",
+        "description": "Logout and revoke(add to jwt black list) access_token, refresh_token (if provided).\nDelete access/refresh token stored on cookie.\n    - Access token(optional) can be provided via Header or Cookie\n    - Refresh token(optional) can be provided via Body or Cookie",
+        "operationId": "logout_api_v1_auth_logout_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_logout_api_v1_auth_logout_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseSuccessSchema"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AccessTokenCookie": []
+          },
+          {
+            "AccessTokenHeader": []
+          },
+          {
+            "RefreshTokenCookie": []
+          }
+        ]
+      }
+    },
+    "/api/v1/auth/refresh": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Refresh Access Token",
+        "description": "Write access token to cookie(for web client) and return access token in response data(for mobile client)",
+        "operationId": "refresh_access_token_api_v1_auth_refresh_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_refresh_access_token_api_v1_auth_refresh_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseSuccessSchema_str_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error 401",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                },
+                "examples": {
+                  "JWT_TOKEN_REVOKED": {
+                    "summary": "JWT_TOKEN_REVOKED",
+                    "value": {
+                      "success": false,
+                      "error_code": "JWT_TOKEN_REVOKED",
+                      "message": "JWT Token has ben revoked"
+                    }
+                  },
+                  "JWT_TOKEN_EXPIRED": {
+                    "summary": "JWT_TOKEN_EXPIRED",
+                    "value": {
+                      "success": false,
+                      "error_code": "JWT_TOKEN_EXPIRED",
+                      "message": "Refresh token has be expired"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Error 403",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                },
+                "examples": {
+                  "USER_NOT_ACTIVE": {
+                    "summary": "USER_NOT_ACTIVE",
+                    "value": {
+                      "success": false,
+                      "error_code": "USER_NOT_ACTIVE",
+                      "message": "User is inactive(User was banned)"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "RefreshTokenCookie": []
+          }
+        ]
+      }
+    },
+    "/api/v1/auth/forgot_password": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Forgot password, get otp from mail",
+        "operationId": "forgot_password_api_v1_auth_forgot_password_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PasswordForgotRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseSuccessSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error 401",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                },
+                "examples": {
+                  "INVALID_CREDENTIALS": {
+                    "summary": "INVALID_CREDENTIALS",
+                    "value": {
+                      "success": false,
+                      "error_code": "INVALID_CREDENTIALS",
+                      "message": "User not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error 422",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                },
+                "examples": {
+                  "VALIDATION_ERROR": {
+                    "summary": "VALIDATION_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "VALIDATION_ERROR",
+                      "message": "Validation error"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/reset_password": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Reset password by otp from mail",
+        "operationId": "reset_password_api_v1_auth_reset_password_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PasswordResetRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseSuccessSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error 401",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                },
+                "examples": {
+                  "INVALID_CREDENTIALS": {
+                    "summary": "INVALID_CREDENTIALS",
+                    "value": {
+                      "success": false,
+                      "error_code": "INVALID_CREDENTIALS",
+                      "message": "User not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error 400",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                },
+                "examples": {
+                  "INVALID_CODE": {
+                    "summary": "INVALID_CODE",
+                    "value": {
+                      "success": false,
+                      "error_code": "INVALID_CODE",
+                      "message": "OTP code not matched or expired"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error 422",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                },
+                "examples": {
+                  "VALIDATION_ERROR": {
+                    "summary": "VALIDATION_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "VALIDATION_ERROR",
+                      "message": "Validation error"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/documents/supported_types": {
+      "get": {
+        "tags": [
+          "Documents"
+        ],
+        "summary": "Get supported document types",
+        "description": "Returns a list of supported document file types as extensions (e.g. '.pdf', '.docx').",
+        "operationId": "get_supported_types_api_v1_documents_supported_types_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseSuccessSchema_list_str__"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/documents/max_size": {
+      "get": {
+        "tags": [
+          "Documents"
+        ],
+        "summary": "Get max upload file size",
+        "description": "Returns the maximum supported document upload size in bytes.",
+        "operationId": "get_max_supported_document_size_bytes_api_v1_documents_max_size_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseSuccessSchema_int_"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/documents": {
+      "post": {
+        "tags": [
+          "Documents"
+        ],
+        "summary": "Upload document. Require login",
+        "description": "Upload a new document.",
+        "operationId": "upload_document_api_v1_documents_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/DocumentUploadRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseSuccessSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error 401",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                },
+                "examples": {
+                  "UNAUTHORIZED_ERROR": {
+                    "summary": "UNAUTHORIZED_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "UNAUTHORIZED_ERROR",
+                      "message": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Error 409",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                },
+                "examples": {
+                  "RESOURCE_ALREADY_EXISTS": {
+                    "summary": "RESOURCE_ALREADY_EXISTS",
+                    "value": {
+                      "success": false,
+                      "error_code": "RESOURCE_ALREADY_EXISTS",
+                      "message": "Document title already exists."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error 404",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                },
+                "examples": {
+                  "RESOURCE_NOT_FOUND": {
+                    "summary": "RESOURCE_NOT_FOUND",
+                    "value": {
+                      "success": false,
+                      "error_code": "RESOURCE_NOT_FOUND",
+                      "message": "Category not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error 422",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                },
+                "examples": {
+                  "VALIDATION_ERROR": {
+                    "summary": "VALIDATION_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "VALIDATION_ERROR",
+                      "message": "Validation error"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AccessTokenCookie": []
+          },
+          {
+            "AccessTokenHeader": []
+          }
+        ]
+      }
+    },
+    "/api/v1/documents/{document_id}": {
+      "get": {
+        "tags": [
+          "Documents"
+        ],
+        "summary": "Get document details",
+        "description": "Retrieve detailed information of a specific document.",
+        "operationId": "get_document_details_api_v1_documents__document_id__get",
+        "security": [
+          {
+            "AccessTokenCookie": []
+          },
+          {
+            "AccessTokenHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Document Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseSuccessSchema_DocumentDetailsSchema_"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error 404",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "RESOURCE_NOT_FOUND": {
+                    "summary": "RESOURCE_NOT_FOUND",
+                    "value": {
+                      "success": false,
+                      "error_code": "RESOURCE_NOT_FOUND",
+                      "message": "Resource not found"
+                    }
+                  },
+                  "RESOURCE_NOT_AVAILABLE": {
+                    "summary": "RESOURCE_NOT_AVAILABLE",
+                    "value": {
+                      "success": false,
+                      "error_code": "RESOURCE_NOT_AVAILABLE",
+                      "message": "Resource not available"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Error 403",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "FORBIDDEN": {
+                    "summary": "FORBIDDEN",
+                    "value": {
+                      "success": false,
+                      "error_code": "FORBIDDEN",
+                      "message": "Forbidden"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error 422",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "VALIDATION_ERROR": {
+                    "summary": "VALIDATION_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "VALIDATION_ERROR",
+                      "message": "Validation error"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Documents"
+        ],
+        "summary": "Update document",
+        "operationId": "update_document_api_v1_documents__document_id__patch",
+        "security": [
+          {
+            "AccessTokenCookie": []
+          },
+          {
+            "AccessTokenHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Document Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DocumentUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseSuccessSchema_DocumentUpdateRequest_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error 401",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "UNAUTHORIZED_ERROR": {
+                    "summary": "UNAUTHORIZED_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "UNAUTHORIZED_ERROR",
+                      "message": "Unauthorized"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Error 403",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "FORBIDDEN": {
+                    "summary": "FORBIDDEN",
+                    "value": {
+                      "success": false,
+                      "error_code": "FORBIDDEN",
+                      "message": "Forbidden"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error 422",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "VALIDATION_ERROR": {
+                    "summary": "VALIDATION_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "VALIDATION_ERROR",
+                      "message": "Validation error"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Documents"
+        ],
+        "summary": "Move document to trash",
+        "description": "Soft delete a document. It can be restored before permanent deletion.",
+        "operationId": "delete_document_api_v1_documents__document_id__delete",
+        "security": [
+          {
+            "AccessTokenCookie": []
+          },
+          {
+            "AccessTokenHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Document Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseSuccessSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error 401",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "UNAUTHORIZED_ERROR": {
+                    "summary": "UNAUTHORIZED_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "UNAUTHORIZED_ERROR",
+                      "message": "Unauthorized"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error 404",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "RESOURCE_NOT_FOUND": {
+                    "summary": "RESOURCE_NOT_FOUND",
+                    "value": {
+                      "success": false,
+                      "error_code": "RESOURCE_NOT_FOUND",
+                      "message": "Resource not found"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Error 403",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "FORBIDDEN": {
+                    "summary": "FORBIDDEN",
+                    "value": {
+                      "success": false,
+                      "error_code": "FORBIDDEN",
+                      "message": "Forbidden"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error 422",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "VALIDATION_ERROR": {
+                    "summary": "VALIDATION_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "VALIDATION_ERROR",
+                      "message": "Validation error"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/documents/{document_id}/restore": {
+      "post": {
+        "tags": [
+          "Documents"
+        ],
+        "summary": "Restore document",
+        "description": "Restore a document from the trash.",
+        "operationId": "restore_document_api_v1_documents__document_id__restore_post",
+        "security": [
+          {
+            "AccessTokenCookie": []
+          },
+          {
+            "AccessTokenHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Document Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseSuccessSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error 401",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "UNAUTHORIZED_ERROR": {
+                    "summary": "UNAUTHORIZED_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "UNAUTHORIZED_ERROR",
+                      "message": "Unauthorized"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error 404",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "RESOURCE_NOT_FOUND": {
+                    "summary": "RESOURCE_NOT_FOUND",
+                    "value": {
+                      "success": false,
+                      "error_code": "RESOURCE_NOT_FOUND",
+                      "message": "Resource not found"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Error 403",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "FORBIDDEN": {
+                    "summary": "FORBIDDEN",
+                    "value": {
+                      "success": false,
+                      "error_code": "FORBIDDEN",
+                      "message": "Forbidden"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error 422",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "VALIDATION_ERROR": {
+                    "summary": "VALIDATION_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "VALIDATION_ERROR",
+                      "message": "Validation error"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/documents/{document_id}/tags": {
+      "put": {
+        "tags": [
+          "Documents"
+        ],
+        "summary": "Add tag to document",
+        "operationId": "add_tag_api_v1_documents__document_id__tags_put",
+        "security": [
+          {
+            "AccessTokenCookie": []
+          },
+          {
+            "AccessTokenHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Document Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DocumentTagSchema"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseSuccessSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error 401",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "UNAUTHORIZED_ERROR": {
+                    "summary": "UNAUTHORIZED_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "UNAUTHORIZED_ERROR",
+                      "message": "Unauthorized"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error 404",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "RESOURCE_NOT_FOUND": {
+                    "summary": "RESOURCE_NOT_FOUND",
+                    "value": {
+                      "success": false,
+                      "error_code": "RESOURCE_NOT_FOUND",
+                      "message": "Resource not found"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Error 403",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "FORBIDDEN": {
+                    "summary": "FORBIDDEN",
+                    "value": {
+                      "success": false,
+                      "error_code": "FORBIDDEN",
+                      "message": "Forbidden"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error 422",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "VALIDATION_ERROR": {
+                    "summary": "VALIDATION_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "VALIDATION_ERROR",
+                      "message": "Validation error"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Documents"
+        ],
+        "summary": "Remove tag from document",
+        "operationId": "remove_tag_api_v1_documents__document_id__tags_delete",
+        "security": [
+          {
+            "AccessTokenCookie": []
+          },
+          {
+            "AccessTokenHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Document Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DocumentTagSchema"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseSuccessSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error 401",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "UNAUTHORIZED_ERROR": {
+                    "summary": "UNAUTHORIZED_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "UNAUTHORIZED_ERROR",
+                      "message": "Unauthorized"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error 404",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "RESOURCE_NOT_FOUND": {
+                    "summary": "RESOURCE_NOT_FOUND",
+                    "value": {
+                      "success": false,
+                      "error_code": "RESOURCE_NOT_FOUND",
+                      "message": "Resource not found"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Error 403",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "FORBIDDEN": {
+                    "summary": "FORBIDDEN",
+                    "value": {
+                      "success": false,
+                      "error_code": "FORBIDDEN",
+                      "message": "Forbidden"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error 422",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "VALIDATION_ERROR": {
+                    "summary": "VALIDATION_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "VALIDATION_ERROR",
+                      "message": "Validation error"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/documents/{document_id}/like": {
+      "put": {
+        "tags": [
+          "Documents"
+        ],
+        "summary": "Like document",
+        "description": "Mark a document as liked by the current user.",
+        "operationId": "like_document_api_v1_documents__document_id__like_put",
+        "security": [
+          {
+            "AccessTokenCookie": []
+          },
+          {
+            "AccessTokenHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Document Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseSuccessSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error 401",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "UNAUTHORIZED_ERROR": {
+                    "summary": "UNAUTHORIZED_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "UNAUTHORIZED_ERROR",
+                      "message": "Unauthorized"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error 404",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "RESOURCE_NOT_FOUND": {
+                    "summary": "RESOURCE_NOT_FOUND",
+                    "value": {
+                      "success": false,
+                      "error_code": "RESOURCE_NOT_FOUND",
+                      "message": "Resource not found"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Error 403",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "FORBIDDEN": {
+                    "summary": "FORBIDDEN",
+                    "value": {
+                      "success": false,
+                      "error_code": "FORBIDDEN",
+                      "message": "Forbidden"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error 422",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "VALIDATION_ERROR": {
+                    "summary": "VALIDATION_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "VALIDATION_ERROR",
+                      "message": "Validation error"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Documents"
+        ],
+        "summary": "Unlike document",
+        "description": "Remove like from a document.",
+        "operationId": "unlike_document_api_v1_documents__document_id__like_delete",
+        "security": [
+          {
+            "AccessTokenCookie": []
+          },
+          {
+            "AccessTokenHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Document Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseSuccessSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error 401",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "UNAUTHORIZED_ERROR": {
+                    "summary": "UNAUTHORIZED_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "UNAUTHORIZED_ERROR",
+                      "message": "Unauthorized"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error 404",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "RESOURCE_NOT_FOUND": {
+                    "summary": "RESOURCE_NOT_FOUND",
+                    "value": {
+                      "success": false,
+                      "error_code": "RESOURCE_NOT_FOUND",
+                      "message": "Resource not found"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Error 403",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "FORBIDDEN": {
+                    "summary": "FORBIDDEN",
+                    "value": {
+                      "success": false,
+                      "error_code": "FORBIDDEN",
+                      "message": "Forbidden"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error 422",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "VALIDATION_ERROR": {
+                    "summary": "VALIDATION_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "VALIDATION_ERROR",
+                      "message": "Validation error"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/documents/{document_id}/download": {
+      "get": {
+        "tags": [
+          "Documents"
+        ],
+        "summary": "Download document",
+        "description": "Download a document in the specified format. Response data is a url for download.",
+        "operationId": "download_document_api_v1_documents__document_id__download_get",
+        "security": [
+          {
+            "AccessTokenCookie": []
+          },
+          {
+            "AccessTokenHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Document Id"
+            }
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Document format to download",
+              "default": ".pdf",
+              "title": "Format"
+            },
+            "description": "Document format to download"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseSuccessSchema_str_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error 401",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "UNAUTHORIZED_ERROR": {
+                    "summary": "UNAUTHORIZED_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "UNAUTHORIZED_ERROR",
+                      "message": "Unauthorized"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error 404",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "RESOURCE_NOT_FOUND": {
+                    "summary": "RESOURCE_NOT_FOUND",
+                    "value": {
+                      "success": false,
+                      "error_code": "RESOURCE_NOT_FOUND",
+                      "message": "Resource not found"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Error 403",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "FORBIDDEN": {
+                    "summary": "FORBIDDEN",
+                    "value": {
+                      "success": false,
+                      "error_code": "FORBIDDEN",
+                      "message": "Forbidden"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error 422",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "VALIDATION_ERROR": {
+                    "summary": "VALIDATION_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "VALIDATION_ERROR",
+                      "message": "Validation error"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/documents/{document_id}/collections": {
+      "put": {
+        "tags": [
+          "Documents"
+        ],
+        "summary": "Sync document collections",
+        "description": "Synchronize the list of collections for a document.This will add the document to new collections and remove it from any existing collections not included in the provided list. Operation is scoped to the current user's collections only.",
+        "operationId": "put_document_to_collections_api_v1_documents__document_id__collections_put",
+        "security": [
+          {
+            "AccessTokenCookie": []
+          },
+          {
+            "AccessTokenHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Document Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_put_document_to_collections_api_v1_documents__document_id__collections_put"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseSuccessSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error 401",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "UNAUTHORIZED_ERROR": {
+                    "summary": "UNAUTHORIZED_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "UNAUTHORIZED_ERROR",
+                      "message": "Unauthorized"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error 404",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "RESOURCE_NOT_FOUND": {
+                    "summary": "RESOURCE_NOT_FOUND",
+                    "value": {
+                      "success": false,
+                      "error_code": "RESOURCE_NOT_FOUND",
+                      "message": "Resource not found"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Error 403",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "FORBIDDEN": {
+                    "summary": "FORBIDDEN",
+                    "value": {
+                      "success": false,
+                      "error_code": "FORBIDDEN",
+                      "message": "Forbidden"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error 422",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "VALIDATION_ERROR": {
+                    "summary": "VALIDATION_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "VALIDATION_ERROR",
+                      "message": "Validation error"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/collections": {
+      "post": {
+        "tags": [
+          "Collections"
+        ],
+        "summary": "Create Collection",
+        "operationId": "create_collection_api_v1_collections_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_create_collection_api_v1_collections_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseSuccessSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error 401",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                },
+                "examples": {
+                  "UNAUTHORIZED_ERROR": {
+                    "summary": "UNAUTHORIZED_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "UNAUTHORIZED_ERROR",
+                      "message": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Error 409",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                },
+                "examples": {
+                  "RESOURCE_ALREADY_EXISTS": {
+                    "summary": "RESOURCE_ALREADY_EXISTS",
+                    "value": {
+                      "success": false,
+                      "error_code": "RESOURCE_ALREADY_EXISTS",
+                      "message": "Collection already exists."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error 422",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                },
+                "examples": {
+                  "VALIDATION_ERROR": {
+                    "summary": "VALIDATION_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "VALIDATION_ERROR",
+                      "message": "Validation error"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AccessTokenCookie": []
+          },
+          {
+            "AccessTokenHeader": []
+          }
+        ]
+      }
+    },
+    "/api/v1/collections/{collection_id}/items": {
+      "get": {
+        "tags": [
+          "Collections"
+        ],
+        "summary": "Get documents in collection",
+        "operationId": "get_documents_in_collection_api_v1_collections__collection_id__items_get",
+        "security": [
+          {
+            "AccessTokenCookie": []
+          },
+          {
+            "AccessTokenHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "collection_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Collection Id"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Page number",
+              "default": 1,
+              "title": "Page"
+            },
+            "description": "Page number"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "description": "Maximum number of items per page",
+              "default": 10,
+              "title": "Limit"
+            },
+            "description": "Maximum number of items per page"
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Search query, default None",
+              "title": "Q"
+            },
+            "description": "Search query, default None"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponsePaginationSchema_DocumentSummarySchema_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error 401",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "UNAUTHORIZED_ERROR": {
+                    "summary": "UNAUTHORIZED_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "UNAUTHORIZED_ERROR",
+                      "message": "Unauthorized"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error 404",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "RESOURCE_NOT_FOUND": {
+                    "summary": "RESOURCE_NOT_FOUND",
+                    "value": {
+                      "success": false,
+                      "error_code": "RESOURCE_NOT_FOUND",
+                      "message": "Collection not found."
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error 422",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "VALIDATION_ERROR": {
+                    "summary": "VALIDATION_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "VALIDATION_ERROR",
+                      "message": "Validation error"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/collections/{collection_id}": {
+      "patch": {
+        "tags": [
+          "Collections"
+        ],
+        "summary": "Rename Collection",
+        "operationId": "rename_collection_api_v1_collections__collection_id__patch",
+        "security": [
+          {
+            "AccessTokenCookie": []
+          },
+          {
+            "AccessTokenHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "collection_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Collection Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_rename_collection_api_v1_collections__collection_id__patch"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseSuccessSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error 401",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "UNAUTHORIZED_ERROR": {
+                    "summary": "UNAUTHORIZED_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "UNAUTHORIZED_ERROR",
+                      "message": "Unauthorized"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error 404",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "RESOURCE_NOT_FOUND": {
+                    "summary": "RESOURCE_NOT_FOUND",
+                    "value": {
+                      "success": false,
+                      "error_code": "RESOURCE_NOT_FOUND",
+                      "message": "Collection not found."
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Error 409",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "RESOURCE_ALREADY_EXISTS": {
+                    "summary": "RESOURCE_ALREADY_EXISTS",
+                    "value": {
+                      "success": false,
+                      "error_code": "RESOURCE_ALREADY_EXISTS",
+                      "message": "Collection name(new name) already exists"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Error 403",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "FORBIDDEN": {
+                    "summary": "FORBIDDEN",
+                    "value": {
+                      "success": false,
+                      "error_code": "FORBIDDEN",
+                      "message": "User not have permission to update collection"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error 422",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "VALIDATION_ERROR": {
+                    "summary": "VALIDATION_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "VALIDATION_ERROR",
+                      "message": "Validation error"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Collections"
+        ],
+        "summary": "Delete Collection",
+        "operationId": "delete_collection_api_v1_collections__collection_id__delete",
+        "security": [
+          {
+            "AccessTokenCookie": []
+          },
+          {
+            "AccessTokenHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "collection_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Collection Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseSuccessSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error 401",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "UNAUTHORIZED_ERROR": {
+                    "summary": "UNAUTHORIZED_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "UNAUTHORIZED_ERROR",
+                      "message": "Unauthorized"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error 404",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "RESOURCE_NOT_FOUND": {
+                    "summary": "RESOURCE_NOT_FOUND",
+                    "value": {
+                      "success": false,
+                      "error_code": "RESOURCE_NOT_FOUND",
+                      "message": "Collection not found."
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Error 403",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "FORBIDDEN": {
+                    "summary": "FORBIDDEN",
+                    "value": {
+                      "success": false,
+                      "error_code": "FORBIDDEN",
+                      "message": "User not have permission to delete collection"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error 422",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "VALIDATION_ERROR": {
+                    "summary": "VALIDATION_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "VALIDATION_ERROR",
+                      "message": "Validation error"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/collections/{collection_id}/items/{document_id}": {
+      "put": {
+        "tags": [
+          "Collections"
+        ],
+        "summary": "Add Document To Collection",
+        "operationId": "add_document_to_collection_api_v1_collections__collection_id__items__document_id__put",
+        "security": [
+          {
+            "AccessTokenCookie": []
+          },
+          {
+            "AccessTokenHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "collection_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Collection Id"
+            }
+          },
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Document Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseSuccessSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error 401",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "UNAUTHORIZED_ERROR": {
+                    "summary": "UNAUTHORIZED_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "UNAUTHORIZED_ERROR",
+                      "message": "Unauthorized"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error 404",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "RESOURCE_NOT_FOUND": {
+                    "summary": "RESOURCE_NOT_FOUND",
+                    "value": {
+                      "success": false,
+                      "error_code": "RESOURCE_NOT_FOUND",
+                      "message": "Resource not found"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Error 403",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "FORBIDDEN": {
+                    "summary": "FORBIDDEN",
+                    "value": {
+                      "success": false,
+                      "error_code": "FORBIDDEN",
+                      "message": "Forbidden"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error 422",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "VALIDATION_ERROR": {
+                    "summary": "VALIDATION_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "VALIDATION_ERROR",
+                      "message": "Validation error"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Collections"
+        ],
+        "summary": "Remove Document From Collection",
+        "operationId": "remove_document_from_collection_api_v1_collections__collection_id__items__document_id__delete",
+        "security": [
+          {
+            "AccessTokenCookie": []
+          },
+          {
+            "AccessTokenHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "collection_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Collection Id"
+            }
+          },
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Document Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseSuccessSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error 401",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "UNAUTHORIZED_ERROR": {
+                    "summary": "UNAUTHORIZED_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "UNAUTHORIZED_ERROR",
+                      "message": "Unauthorized"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error 404",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "RESOURCE_NOT_FOUND": {
+                    "summary": "RESOURCE_NOT_FOUND",
+                    "value": {
+                      "success": false,
+                      "error_code": "RESOURCE_NOT_FOUND",
+                      "message": "Resource not found"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Error 403",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "FORBIDDEN": {
+                    "summary": "FORBIDDEN",
+                    "value": {
+                      "success": false,
+                      "error_code": "FORBIDDEN",
+                      "message": "Forbidden"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error 422",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "VALIDATION_ERROR": {
+                    "summary": "VALIDATION_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "VALIDATION_ERROR",
+                      "message": "Validation error"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/reports/available_reasons": {
+      "get": {
+        "tags": [
+          "Reports"
+        ],
+        "summary": "Get Available Report Reasons",
+        "operationId": "get_available_report_reasons_api_v1_reports_available_reasons_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseSuccessSchema_list_ReportReasonSchema__"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/reports/documents/{document_id}": {
+      "post": {
+        "tags": [
+          "Reports"
+        ],
+        "summary": "Report Document",
+        "operationId": "report_document_api_v1_reports_documents__document_id__post",
+        "security": [
+          {
+            "AccessTokenCookie": []
+          },
+          {
+            "AccessTokenHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Document Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReportRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseSuccessSchema"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error 422",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "VALIDATION_ERROR": {
+                    "summary": "VALIDATION_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "VALIDATION_ERROR",
+                      "message": "Validation error"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/search": {
+      "get": {
+        "tags": [
+          "Search"
+        ],
+        "summary": "Search",
+        "operationId": "search_api_v1_search_get",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Page number",
+              "default": 1,
+              "title": "Page"
+            },
+            "description": "Page number"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "description": "Maximum number of items per page",
+              "default": 10,
+              "title": "Limit"
+            },
+            "description": "Maximum number of items per page"
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Search query, default None",
+              "title": "Q"
+            },
+            "description": "Search query, default None"
+          },
+          {
+            "name": "types",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Document type",
+              "title": "Types"
+            },
+            "description": "Document type"
+          },
+          {
+            "name": "category_ids",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Category Ids"
+            }
+          },
+          {
+            "name": "tags",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Tags"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Sort"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponsePaginationSchema_DocumentSummarySchema_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error 422",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "VALIDATION_ERROR": {
+                    "summary": "VALIDATION_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "VALIDATION_ERROR",
+                      "message": "Validation error"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/me/profile": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Get self profile",
+        "operationId": "get_self_profile_api_v1_users_me_profile_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseSuccessSchema_UserPublicProfileSchema_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error 401",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                },
+                "examples": {
+                  "UNAUTHORIZED_ERROR": {
+                    "summary": "UNAUTHORIZED_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "UNAUTHORIZED_ERROR",
+                      "message": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AccessTokenCookie": []
+          },
+          {
+            "AccessTokenHeader": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Update self profile",
+        "operationId": "update_self_profile_api_v1_users_me_profile_patch",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserProfileUpdateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseSuccessSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error 401",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                },
+                "examples": {
+                  "UNAUTHORIZED_ERROR": {
+                    "summary": "UNAUTHORIZED_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "UNAUTHORIZED_ERROR",
+                      "message": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error 422",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                },
+                "examples": {
+                  "VALIDATION_ERROR": {
+                    "summary": "VALIDATION_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "VALIDATION_ERROR",
+                      "message": "Validation error"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AccessTokenCookie": []
+          },
+          {
+            "AccessTokenHeader": []
+          }
+        ]
+      }
+    },
+    "/api/v1/users/me/avatar": {
+      "put": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Update self avatar",
+        "operationId": "update_avatar_api_v1_users_me_avatar_put",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/AvatarUpdateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseSuccessSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error 401",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                },
+                "examples": {
+                  "UNAUTHORIZED_ERROR": {
+                    "summary": "UNAUTHORIZED_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "UNAUTHORIZED_ERROR",
+                      "message": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error 422",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                },
+                "examples": {
+                  "VALIDATION_ERROR": {
+                    "summary": "VALIDATION_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "VALIDATION_ERROR",
+                      "message": "Validation error"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AccessTokenCookie": []
+          },
+          {
+            "AccessTokenHeader": []
+          }
+        ]
+      }
+    },
+    "/api/v1/users/me/documents": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Get Self Documents",
+        "operationId": "get_self_documents_api_v1_users_me_documents_get",
+        "security": [
+          {
+            "AccessTokenCookie": []
+          },
+          {
+            "AccessTokenHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Page number",
+              "default": 1,
+              "title": "Page"
+            },
+            "description": "Page number"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "description": "Maximum number of items per page",
+              "default": 10,
+              "title": "Limit"
+            },
+            "description": "Maximum number of items per page"
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Search query, default None",
+              "title": "Q"
+            },
+            "description": "Search query, default None"
+          },
+          {
+            "name": "types",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Document type",
+              "title": "Types"
+            },
+            "description": "Document type"
+          },
+          {
+            "name": "category_ids",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Category Ids"
+            }
+          },
+          {
+            "name": "tags",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Tags"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Sort"
+            }
+          },
+          {
+            "name": "statuses",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DocumentStatus"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": [
+                "READY"
+              ],
+              "title": "Statuses"
+            }
+          },
+          {
+            "name": "visibility",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/DocumentVisibility"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Visibility"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponsePaginationSchema_DocumentSummarySchema_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error 401",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "UNAUTHORIZED_ERROR": {
+                    "summary": "UNAUTHORIZED_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "UNAUTHORIZED_ERROR",
+                      "message": "Unauthorized"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error 422",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "VALIDATION_ERROR": {
+                    "summary": "VALIDATION_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "VALIDATION_ERROR",
+                      "message": "Validation error"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/me/liked_documents": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Get Liked Documents",
+        "operationId": "get_liked_documents_api_v1_users_me_liked_documents_get",
+        "security": [
+          {
+            "AccessTokenCookie": []
+          },
+          {
+            "AccessTokenHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Page number",
+              "default": 1,
+              "title": "Page"
+            },
+            "description": "Page number"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "description": "Maximum number of items per page",
+              "default": 10,
+              "title": "Limit"
+            },
+            "description": "Maximum number of items per page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponsePaginationSchema_DocumentSummarySchema_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error 401",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "UNAUTHORIZED_ERROR": {
+                    "summary": "UNAUTHORIZED_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "UNAUTHORIZED_ERROR",
+                      "message": "Unauthorized"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error 422",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "VALIDATION_ERROR": {
+                    "summary": "VALIDATION_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "VALIDATION_ERROR",
+                      "message": "Validation error"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/me/collections": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Get self collections",
+        "operationId": "get_self_collections_api_v1_users_me_collections_get",
+        "security": [
+          {
+            "AccessTokenCookie": []
+          },
+          {
+            "AccessTokenHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Page number",
+              "default": 1,
+              "title": "Page"
+            },
+            "description": "Page number"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "description": "Maximum number of items per page",
+              "default": 10,
+              "title": "Limit"
+            },
+            "description": "Maximum number of items per page"
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Search query, default None",
+              "title": "Q"
+            },
+            "description": "Search query, default None"
+          },
+          {
+            "name": "document_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Collection must contain specific document id. Default None(ignored)",
+              "title": "Document Id"
+            },
+            "description": "Collection must contain specific document id. Default None(ignored)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponsePaginationSchema_CollectionSchema_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error 401",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "UNAUTHORIZED_ERROR": {
+                    "summary": "UNAUTHORIZED_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "UNAUTHORIZED_ERROR",
+                      "message": "Unauthorized"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error 422",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "VALIDATION_ERROR": {
+                    "summary": "VALIDATION_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "VALIDATION_ERROR",
+                      "message": "Validation error"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/{username}/profile": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Select other user's profile",
+        "operationId": "get_userprofile_api_v1_users__username__profile_get",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Username"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseSuccessSchema_UserPublicProfileSchema_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/{username}/documents": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Select other user's Public && Active documents",
+        "operationId": "get_user_documents_api_v1_users__username__documents_get",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Username"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Page number",
+              "default": 1,
+              "title": "Page"
+            },
+            "description": "Page number"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "description": "Maximum number of items per page",
+              "default": 10,
+              "title": "Limit"
+            },
+            "description": "Maximum number of items per page"
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Search query, default None",
+              "title": "Q"
+            },
+            "description": "Search query, default None"
+          },
+          {
+            "name": "types",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Document type",
+              "title": "Types"
+            },
+            "description": "Document type"
+          },
+          {
+            "name": "category_ids",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Category Ids"
+            }
+          },
+          {
+            "name": "tags",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Tags"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Sort"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponsePaginationSchema_DocumentSummarySchema_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error 422",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "VALIDATION_ERROR": {
+                    "summary": "VALIDATION_ERROR",
+                    "value": {
+                      "success": false,
+                      "error_code": "VALIDATION_ERROR",
+                      "message": "Validation error"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorSchema"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AvatarUpdateRequest": {
+        "properties": {
+          "avatar": {
+            "type": "string",
+            "contentMediaType": "application/octet-stream",
+            "title": "Avatar"
+          }
+        },
+        "type": "object",
+        "required": [
+          "avatar"
+        ],
+        "title": "AvatarUpdateRequest"
+      },
+      "Body_ban_api_v1_admin_users__user_id__ban_post": {
+        "properties": {
+          "reason": {
+            "type": "string",
+            "title": "Reason"
+          }
+        },
+        "type": "object",
+        "required": [
+          "reason"
+        ],
+        "title": "Body_ban_api_v1_admin_users__user_id__ban_post"
+      },
+      "Body_create_category_api_v1_admin_categories_post": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "title": "Body_create_category_api_v1_admin_categories_post"
+      },
+      "Body_create_collection_api_v1_collections_post": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "title": "Body_create_collection_api_v1_collections_post"
+      },
+      "Body_logout_api_v1_auth_logout_post": {
+        "properties": {
+          "refresh_token": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Refresh Token"
+          }
+        },
+        "type": "object",
+        "title": "Body_logout_api_v1_auth_logout_post"
+      },
+      "Body_put_document_to_collections_api_v1_documents__document_id__collections_put": {
+        "properties": {
+          "collection_ids": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Collection Ids"
+          }
+        },
+        "type": "object",
+        "required": [
+          "collection_ids"
+        ],
+        "title": "Body_put_document_to_collections_api_v1_documents__document_id__collections_put"
+      },
+      "Body_refresh_access_token_api_v1_auth_refresh_post": {
+        "properties": {
+          "refresh_token": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Refresh Token"
+          }
+        },
+        "type": "object",
+        "title": "Body_refresh_access_token_api_v1_auth_refresh_post"
+      },
+      "Body_rename_category_api_v1_admin_categories__category_id__patch": {
+        "properties": {
+          "new_name": {
+            "type": "string",
+            "title": "New Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "new_name"
+        ],
+        "title": "Body_rename_category_api_v1_admin_categories__category_id__patch"
+      },
+      "Body_rename_collection_api_v1_collections__collection_id__patch": {
+        "properties": {
+          "new_name": {
+            "type": "string",
+            "title": "New Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "new_name"
+        ],
+        "title": "Body_rename_collection_api_v1_collections__collection_id__patch"
+      },
+      "CategorySchema": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name"
+        ],
+        "title": "CategorySchema"
+      },
+      "CollectionSchema": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "total_items": {
+            "type": "integer",
+            "title": "Total Items"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "total_items"
+        ],
+        "title": "CollectionSchema"
+      },
+      "DocumentDetailsSchema": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "file_thumbnail_url": {
+            "type": "string",
+            "title": "File Thumbnail Url",
+            "default": ""
+          },
+          "file_type": {
+            "type": "string",
+            "title": "File Type",
+            "description": "Original file type"
+          },
+          "visibility": {
+            "$ref": "#/components/schemas/DocumentVisibility"
+          },
+          "status": {
+            "$ref": "#/components/schemas/DocumentStatus"
+          },
+          "owner": {
+            "type": "string",
+            "title": "Owner",
+            "description": "owner username"
+          },
+          "page_count": {
+            "type": "integer",
+            "title": "Page Count"
+          },
+          "view_count": {
+            "type": "integer",
+            "title": "View Count"
+          },
+          "like_count": {
+            "type": "integer",
+            "title": "Like Count"
+          },
+          "download_count": {
+            "type": "integer",
+            "title": "Download Count"
+          },
+          "category": {
+            "type": "string",
+            "title": "Category",
+            "description": "category name"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Tags",
+            "description": "tag name"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "desc": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Desc"
+          },
+          "file_preview_url": {
+            "type": "string",
+            "title": "File Preview Url",
+            "description": "Preview version(PDF)",
+            "default": ""
+          },
+          "liked": {
+            "type": "boolean",
+            "title": "Liked",
+            "description": "Whether or not the document was liked by current user",
+            "default": false
+          },
+          "sha256sum": {
+            "type": "string",
+            "title": "Sha256Sum"
+          },
+          "md5sum": {
+            "type": "string",
+            "title": "Md5Sum"
+          },
+          "available_formats": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Available Formats",
+            "description": "Available formats for download document. ",
+            "readOnly": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "file_type",
+          "visibility",
+          "status",
+          "owner",
+          "page_count",
+          "view_count",
+          "like_count",
+          "download_count",
+          "category",
+          "tags",
+          "created_at",
+          "desc",
+          "sha256sum",
+          "md5sum",
+          "available_formats"
+        ],
+        "title": "DocumentDetailsSchema"
+      },
+      "DocumentStatus": {
+        "type": "string",
+        "enum": [
+          "PROCESSING",
+          "READY",
+          "DELETED",
+          "BANNED"
+        ],
+        "title": "DocumentStatus"
+      },
+      "DocumentSummarySchema": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "file_thumbnail_url": {
+            "type": "string",
+            "title": "File Thumbnail Url",
+            "default": ""
+          },
+          "file_type": {
+            "type": "string",
+            "title": "File Type",
+            "description": "Original file type"
+          },
+          "visibility": {
+            "$ref": "#/components/schemas/DocumentVisibility"
+          },
+          "status": {
+            "$ref": "#/components/schemas/DocumentStatus"
+          },
+          "owner": {
+            "type": "string",
+            "title": "Owner",
+            "description": "owner username"
+          },
+          "page_count": {
+            "type": "integer",
+            "title": "Page Count"
+          },
+          "view_count": {
+            "type": "integer",
+            "title": "View Count"
+          },
+          "like_count": {
+            "type": "integer",
+            "title": "Like Count"
+          },
+          "download_count": {
+            "type": "integer",
+            "title": "Download Count"
+          },
+          "category": {
+            "type": "string",
+            "title": "Category",
+            "description": "category name"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Tags",
+            "description": "tag name"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "file_type",
+          "visibility",
+          "status",
+          "owner",
+          "page_count",
+          "view_count",
+          "like_count",
+          "download_count",
+          "category",
+          "tags",
+          "created_at"
+        ],
+        "title": "DocumentSummarySchema"
+      },
+      "DocumentTagSchema": {
+        "properties": {
+          "tag_name": {
+            "type": "string",
+            "title": "Tag Name"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "tag_name"
+        ],
+        "title": "DocumentTagSchema"
+      },
+      "DocumentUpdateRequest": {
+        "properties": {
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          },
+          "desc": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Desc"
+          },
+          "category_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Category Id"
+          },
+          "visibility": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DocumentVisibility"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "tags": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tags"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "DocumentUpdateRequest"
+      },
+      "DocumentUploadRequest": {
+        "properties": {
+          "file": {
+            "type": "string",
+            "contentMediaType": "application/octet-stream",
+            "title": "File"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "category_id": {
+            "type": "integer",
+            "title": "Category Id"
+          },
+          "visibility": {
+            "$ref": "#/components/schemas/DocumentVisibility",
+            "default": "PUBLIC"
+          },
+          "desc": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Desc"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Tags",
+            "default": []
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "file",
+          "title",
+          "category_id"
+        ],
+        "title": "DocumentUploadRequest"
+      },
+      "DocumentVisibility": {
+        "type": "string",
+        "enum": [
+          "PUBLIC",
+          "PRIVATE"
+        ],
+        "title": "DocumentVisibility"
+      },
+      "Gender": {
+        "type": "string",
+        "enum": [
+          "MALE",
+          "FEMALE",
+          "OTHER"
+        ],
+        "title": "Gender"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "LoginRequest": {
+        "properties": {
+          "identity": {
+            "type": "string",
+            "title": "Identity",
+            "description": "username or email"
+          },
+          "password": {
+            "type": "string",
+            "title": "Password"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "identity",
+          "password"
+        ],
+        "title": "LoginRequest",
+        "description": "/api/auth/login"
+      },
+      "LoginResponse": {
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "title": "Access Token"
+          },
+          "refresh_token": {
+            "type": "string",
+            "title": "Refresh Token"
+          }
+        },
+        "type": "object",
+        "required": [
+          "access_token",
+          "refresh_token"
+        ],
+        "title": "LoginResponse"
+      },
+      "MeResponse": {
+        "properties": {
+          "avatar_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avatar Url"
+          },
+          "role": {
+            "type": "string",
+            "title": "Role"
+          },
+          "username": {
+            "type": "string",
+            "title": "Username"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email"
+          }
+        },
+        "type": "object",
+        "required": [
+          "role",
+          "username",
+          "email"
+        ],
+        "title": "MeResponse",
+        "description": "/api/auth/whoami"
+      },
+      "PaginationMeta": {
+        "properties": {
+          "current_page": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Current Page",
+            "description": "Current page number"
+          },
+          "per_page": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Per Page",
+            "description": "Number of items per page"
+          },
+          "total_items": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Total Items",
+            "description": "Total number of items"
+          },
+          "total_pages": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Total Pages",
+            "description": "Total number of pages"
+          },
+          "has_next": {
+            "type": "boolean",
+            "title": "Has Next",
+            "description": "Whether the next page is available"
+          },
+          "has_prev": {
+            "type": "boolean",
+            "title": "Has Prev",
+            "description": "Whether the previous page is available"
+          }
+        },
+        "type": "object",
+        "required": [
+          "current_page",
+          "per_page",
+          "total_items",
+          "total_pages",
+          "has_next",
+          "has_prev"
+        ],
+        "title": "PaginationMeta",
+        "description": "Class provide pagination metadata"
+      },
+      "PasswordForgotRequest": {
+        "properties": {
+          "identity": {
+            "type": "string",
+            "title": "Identity",
+            "description": "username or email"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "identity"
+        ],
+        "title": "PasswordForgotRequest",
+        "description": "/api/auth/forgot_password"
+      },
+      "PasswordResetRequest": {
+        "properties": {
+          "identity": {
+            "type": "string",
+            "title": "Identity",
+            "description": "username or email"
+          },
+          "otp_code": {
+            "type": "string",
+            "title": "Otp Code"
+          },
+          "new_password": {
+            "type": "string",
+            "maxLength": 16,
+            "minLength": 8,
+            "title": "New Password"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "identity",
+          "otp_code",
+          "new_password"
+        ],
+        "title": "PasswordResetRequest",
+        "description": "/api/auth/reset_password"
+      },
+      "RegisterCompleteRequest": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email"
+          },
+          "registration_code": {
+            "type": "string",
+            "title": "Registration Code"
+          },
+          "username": {
+            "type": "string",
+            "title": "Username"
+          },
+          "password": {
+            "type": "string",
+            "maxLength": 16,
+            "minLength": 8,
+            "title": "Password"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "email",
+          "registration_code",
+          "username",
+          "password"
+        ],
+        "title": "RegisterCompleteRequest",
+        "description": "/api/auth/register/complete"
+      },
+      "RegisterRequest": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "email"
+        ],
+        "title": "RegisterRequest",
+        "description": "/api/auth/register/request"
+      },
+      "RegisterVerifyRequest": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email"
+          },
+          "otp_code": {
+            "type": "string",
+            "title": "Otp Code"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "email",
+          "otp_code"
+        ],
+        "title": "RegisterVerifyRequest",
+        "description": "/api/auth/register/verify"
+      },
+      "RegisterVerifyResponse": {
+        "properties": {
+          "registration_code": {
+            "type": "string",
+            "title": "Registration Code"
+          }
+        },
+        "type": "object",
+        "required": [
+          "registration_code"
+        ],
+        "title": "RegisterVerifyResponse",
+        "description": "/api/auth/register/verify"
+      },
+      "ReportHandleRequest": {
+        "properties": {
+          "note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "accept": {
+            "type": "boolean",
+            "title": "Accept",
+            "description": "Accept report and ban document or not"
+          }
+        },
+        "type": "object",
+        "required": [
+          "accept"
+        ],
+        "title": "ReportHandleRequest"
+      },
+      "ReportReasonSchema": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "code": {
+            "type": "string",
+            "title": "Code"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "code"
+        ],
+        "title": "ReportReasonSchema"
+      },
+      "ReportRequest": {
+        "properties": {
+          "reason": {
+            "type": "integer",
+            "title": "Reason",
+            "description": "ReportReason.id"
+          },
+          "desc": {
+            "type": "string",
+            "title": "Desc",
+            "description": "Report reason description",
+            "default": ""
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "reason"
+        ],
+        "title": "ReportRequest"
+      },
+      "ReportSchema": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "reporter_id": {
+            "type": "integer",
+            "title": "Reporter Id"
+          },
+          "document_id": {
+            "type": "integer",
+            "title": "Document Id"
+          },
+          "report_reason": {
+            "type": "string",
+            "title": "Report Reason"
+          },
+          "desc": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Desc"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ReportStatus"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "reporter_id",
+          "document_id",
+          "report_reason",
+          "desc",
+          "status",
+          "created_at"
+        ],
+        "title": "ReportSchema"
+      },
+      "ReportStatus": {
+        "type": "string",
+        "enum": [
+          "PENDING",
+          "RESOLVED",
+          "REJECTED"
+        ],
+        "title": "ReportStatus"
+      },
+      "ReportedDocumentSchema": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "file_thumbnail_url": {
+            "type": "string",
+            "title": "File Thumbnail Url",
+            "default": ""
+          },
+          "file_type": {
+            "type": "string",
+            "title": "File Type",
+            "description": "Original file type"
+          },
+          "visibility": {
+            "$ref": "#/components/schemas/DocumentVisibility"
+          },
+          "status": {
+            "$ref": "#/components/schemas/DocumentStatus"
+          },
+          "owner": {
+            "type": "string",
+            "title": "Owner",
+            "description": "owner username"
+          },
+          "page_count": {
+            "type": "integer",
+            "title": "Page Count"
+          },
+          "view_count": {
+            "type": "integer",
+            "title": "View Count"
+          },
+          "like_count": {
+            "type": "integer",
+            "title": "Like Count"
+          },
+          "download_count": {
+            "type": "integer",
+            "title": "Download Count"
+          },
+          "category": {
+            "type": "string",
+            "title": "Category",
+            "description": "category name"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Tags",
+            "description": "tag name"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "report_count": {
+            "type": "integer",
+            "title": "Report Count",
+            "default": 0
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "file_type",
+          "visibility",
+          "status",
+          "owner",
+          "page_count",
+          "view_count",
+          "like_count",
+          "download_count",
+          "category",
+          "tags",
+          "created_at"
+        ],
+        "title": "ReportedDocumentSchema"
+      },
+      "ResponseErrorSchema": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "const": false,
+            "title": "Success",
+            "default": "Always false for error response"
+          },
+          "error_code": {
+            "type": "string",
+            "title": "Error Code",
+            "description": "Error code, give client more info about error"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message",
+            "description": "Optional, message to display to user"
+          }
+        },
+        "type": "object",
+        "required": [
+          "error_code",
+          "message"
+        ],
+        "title": "ResponseErrorSchema"
+      },
+      "ResponsePaginationSchema_CollectionSchema_": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "const": true,
+            "title": "Success",
+            "description": "Always true for success response"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/CollectionSchema"
+            },
+            "type": "array",
+            "title": "Data",
+            "description": "List of object"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message",
+            "description": "Optional, message to display to user"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PaginationMeta",
+            "description": "Pagination metadata"
+          }
+        },
+        "type": "object",
+        "required": [
+          "success",
+          "data",
+          "message",
+          "meta"
+        ],
+        "title": "ResponsePaginationSchema[CollectionSchema]"
+      },
+      "ResponsePaginationSchema_DocumentSummarySchema_": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "const": true,
+            "title": "Success",
+            "description": "Always true for success response"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/DocumentSummarySchema"
+            },
+            "type": "array",
+            "title": "Data",
+            "description": "List of object"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message",
+            "description": "Optional, message to display to user"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PaginationMeta",
+            "description": "Pagination metadata"
+          }
+        },
+        "type": "object",
+        "required": [
+          "success",
+          "data",
+          "message",
+          "meta"
+        ],
+        "title": "ResponsePaginationSchema[DocumentSummarySchema]"
+      },
+      "ResponsePaginationSchema_ReportSchema_": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "const": true,
+            "title": "Success",
+            "description": "Always true for success response"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/ReportSchema"
+            },
+            "type": "array",
+            "title": "Data",
+            "description": "List of object"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message",
+            "description": "Optional, message to display to user"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PaginationMeta",
+            "description": "Pagination metadata"
+          }
+        },
+        "type": "object",
+        "required": [
+          "success",
+          "data",
+          "message",
+          "meta"
+        ],
+        "title": "ResponsePaginationSchema[ReportSchema]"
+      },
+      "ResponsePaginationSchema_ReportedDocumentSchema_": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "const": true,
+            "title": "Success",
+            "description": "Always true for success response"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/ReportedDocumentSchema"
+            },
+            "type": "array",
+            "title": "Data",
+            "description": "List of object"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message",
+            "description": "Optional, message to display to user"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PaginationMeta",
+            "description": "Pagination metadata"
+          }
+        },
+        "type": "object",
+        "required": [
+          "success",
+          "data",
+          "message",
+          "meta"
+        ],
+        "title": "ResponsePaginationSchema[ReportedDocumentSchema]"
+      },
+      "ResponsePaginationSchema_UserPrivateProfileSchema_": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "const": true,
+            "title": "Success",
+            "description": "Always true for success response"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/UserPrivateProfileSchema"
+            },
+            "type": "array",
+            "title": "Data",
+            "description": "List of object"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message",
+            "description": "Optional, message to display to user"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PaginationMeta",
+            "description": "Pagination metadata"
+          }
+        },
+        "type": "object",
+        "required": [
+          "success",
+          "data",
+          "message",
+          "meta"
+        ],
+        "title": "ResponsePaginationSchema[UserPrivateProfileSchema]"
+      },
+      "ResponseSuccessSchema": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "const": true,
+            "title": "Success",
+            "description": "Always true for success response"
+          },
+          "data": {
+            "title": "Data",
+            "description": "Response data"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message",
+            "description": "Optional, message to display to user"
+          }
+        },
+        "type": "object",
+        "required": [
+          "success",
+          "data",
+          "message"
+        ],
+        "title": "ResponseSuccessSchema"
+      },
+      "ResponseSuccessSchema_DocumentDetailsSchema_": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "const": true,
+            "title": "Success",
+            "description": "Always true for success response"
+          },
+          "data": {
+            "$ref": "#/components/schemas/DocumentDetailsSchema",
+            "description": "Response data"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message",
+            "description": "Optional, message to display to user"
+          }
+        },
+        "type": "object",
+        "required": [
+          "success",
+          "data",
+          "message"
+        ],
+        "title": "ResponseSuccessSchema[DocumentDetailsSchema]"
+      },
+      "ResponseSuccessSchema_DocumentUpdateRequest_": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "const": true,
+            "title": "Success",
+            "description": "Always true for success response"
+          },
+          "data": {
+            "$ref": "#/components/schemas/DocumentUpdateRequest",
+            "description": "Response data"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message",
+            "description": "Optional, message to display to user"
+          }
+        },
+        "type": "object",
+        "required": [
+          "success",
+          "data",
+          "message"
+        ],
+        "title": "ResponseSuccessSchema[DocumentUpdateRequest]"
+      },
+      "ResponseSuccessSchema_LoginResponse_": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "const": true,
+            "title": "Success",
+            "description": "Always true for success response"
+          },
+          "data": {
+            "$ref": "#/components/schemas/LoginResponse",
+            "description": "Response data"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message",
+            "description": "Optional, message to display to user"
+          }
+        },
+        "type": "object",
+        "required": [
+          "success",
+          "data",
+          "message"
+        ],
+        "title": "ResponseSuccessSchema[LoginResponse]"
+      },
+      "ResponseSuccessSchema_MeResponse_": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "const": true,
+            "title": "Success",
+            "description": "Always true for success response"
+          },
+          "data": {
+            "$ref": "#/components/schemas/MeResponse",
+            "description": "Response data"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message",
+            "description": "Optional, message to display to user"
+          }
+        },
+        "type": "object",
+        "required": [
+          "success",
+          "data",
+          "message"
+        ],
+        "title": "ResponseSuccessSchema[MeResponse]"
+      },
+      "ResponseSuccessSchema_RegisterVerifyResponse_": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "const": true,
+            "title": "Success",
+            "description": "Always true for success response"
+          },
+          "data": {
+            "$ref": "#/components/schemas/RegisterVerifyResponse",
+            "description": "Response data"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message",
+            "description": "Optional, message to display to user"
+          }
+        },
+        "type": "object",
+        "required": [
+          "success",
+          "data",
+          "message"
+        ],
+        "title": "ResponseSuccessSchema[RegisterVerifyResponse]"
+      },
+      "ResponseSuccessSchema_UserPublicProfileSchema_": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "const": true,
+            "title": "Success",
+            "description": "Always true for success response"
+          },
+          "data": {
+            "$ref": "#/components/schemas/UserPublicProfileSchema",
+            "description": "Response data"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message",
+            "description": "Optional, message to display to user"
+          }
+        },
+        "type": "object",
+        "required": [
+          "success",
+          "data",
+          "message"
+        ],
+        "title": "ResponseSuccessSchema[UserPublicProfileSchema]"
+      },
+      "ResponseSuccessSchema_int_": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "const": true,
+            "title": "Success",
+            "description": "Always true for success response"
+          },
+          "data": {
+            "type": "integer",
+            "title": "Data",
+            "description": "Response data"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message",
+            "description": "Optional, message to display to user"
+          }
+        },
+        "type": "object",
+        "required": [
+          "success",
+          "data",
+          "message"
+        ],
+        "title": "ResponseSuccessSchema[int]"
+      },
+      "ResponseSuccessSchema_list_CategorySchema__": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "const": true,
+            "title": "Success",
+            "description": "Always true for success response"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/CategorySchema"
+            },
+            "type": "array",
+            "title": "Data",
+            "description": "Response data"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message",
+            "description": "Optional, message to display to user"
+          }
+        },
+        "type": "object",
+        "required": [
+          "success",
+          "data",
+          "message"
+        ],
+        "title": "ResponseSuccessSchema[list[CategorySchema]]"
+      },
+      "ResponseSuccessSchema_list_ReportReasonSchema__": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "const": true,
+            "title": "Success",
+            "description": "Always true for success response"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/ReportReasonSchema"
+            },
+            "type": "array",
+            "title": "Data",
+            "description": "Response data"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message",
+            "description": "Optional, message to display to user"
+          }
+        },
+        "type": "object",
+        "required": [
+          "success",
+          "data",
+          "message"
+        ],
+        "title": "ResponseSuccessSchema[list[ReportReasonSchema]]"
+      },
+      "ResponseSuccessSchema_list_str__": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "const": true,
+            "title": "Success",
+            "description": "Always true for success response"
+          },
+          "data": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Data",
+            "description": "Response data"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message",
+            "description": "Optional, message to display to user"
+          }
+        },
+        "type": "object",
+        "required": [
+          "success",
+          "data",
+          "message"
+        ],
+        "title": "ResponseSuccessSchema[list[str]]"
+      },
+      "ResponseSuccessSchema_str_": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "const": true,
+            "title": "Success",
+            "description": "Always true for success response"
+          },
+          "data": {
+            "type": "string",
+            "title": "Data",
+            "description": "Response data"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message",
+            "description": "Optional, message to display to user"
+          }
+        },
+        "type": "object",
+        "required": [
+          "success",
+          "data",
+          "message"
+        ],
+        "title": "ResponseSuccessSchema[str]"
+      },
+      "UserPrivateProfileSchema": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "username": {
+            "type": "string",
+            "title": "Username"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "username",
+          "email",
+          "is_active"
+        ],
+        "title": "UserPrivateProfileSchema"
+      },
+      "UserProfileUpdateRequest": {
+        "properties": {
+          "full_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Full Name"
+          },
+          "gender": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Gender"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "phone_number": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone Number"
+          },
+          "bio": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bio"
+          }
+        },
+        "type": "object",
+        "title": "UserProfileUpdateRequest"
+      },
+      "UserPublicProfileSchema": {
+        "properties": {
+          "username": {
+            "type": "string",
+            "title": "Username"
+          },
+          "avatar_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avatar Url"
+          },
+          "full_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Full Name"
+          },
+          "gender": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Gender"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "phone_number": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone Number"
+          },
+          "bio": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bio"
+          }
+        },
+        "type": "object",
+        "required": [
+          "username",
+          "avatar_url",
+          "full_name",
+          "gender",
+          "phone_number",
+          "bio"
+        ],
+        "title": "UserPublicProfileSchema"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    },
+    "securitySchemes": {
+      "AccessTokenCookie": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "access_token"
+      },
+      "AccessTokenHeader": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization"
+      },
+      "RefreshTokenCookie": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "refresh_token"
+      }
+    }
+  }
+}

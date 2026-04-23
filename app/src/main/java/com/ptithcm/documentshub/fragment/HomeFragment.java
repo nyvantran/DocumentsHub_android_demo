@@ -9,11 +9,12 @@ import android.widget.ListView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.ptithcm.documentshub.R;
 import com.ptithcm.documentshub.adapter.CategorySectionAdapter;
 import com.ptithcm.documentshub.model.Category;
-import com.ptithcm.documentshub.model.Document;
+import com.ptithcm.documentshub.viewmodel.HomeViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +25,8 @@ import java.util.List;
 public class HomeFragment extends Fragment {
 
     private ListView lvMainContent;
-    private List<Category> categoryList;
     private CategorySectionAdapter mainAdapter;
+    private HomeViewModel viewModel;
 
     @Nullable
     @Override
@@ -34,36 +35,27 @@ public class HomeFragment extends Fragment {
         
         lvMainContent = view.findViewById(R.id.lv_main_content);
         
-        // Khởi tạo dữ liệu dummy
-        createDummyData();
+        // Khởi tạo ViewModel
+        viewModel = new ViewModelProvider(this).get(HomeViewModel.class);
         
-        // Thiết lập Adapter
-        mainAdapter = new CategorySectionAdapter(requireContext(), categoryList);
+        // Thiết lập Adapter ban đầu với danh sách trống
+        mainAdapter = new CategorySectionAdapter(requireContext(), new ArrayList<>());
         lvMainContent.setAdapter(mainAdapter);
+        
+        // Quan sát dữ liệu từ ViewModel
+        observeViewModel();
+        
+        // Gọi dữ liệu
+        viewModel.fetchHomeData();
         
         return view;
     }
 
-    private void createDummyData() {
-        categoryList = new ArrayList<>();
-
-        // Danh mục Computer
-        List<Document> computerDocs = new ArrayList<>();
-        computerDocs.add(new Document("Kiến trúc phần mềm", "tule193", "Public", 11, "Computer"));
-        computerDocs.add(new Document("Hệ điều hành", "admin", "Public", 45, "Computer"));
-        categoryList.add(new Category("Computer", computerDocs));
-
-        // Danh mục Programming
-        List<Document> programmingDocs = new ArrayList<>();
-        programmingDocs.add(new Document("Java Core for Beginners", "java_master", "Public", 120, "Programming"));
-        programmingDocs.add(new Document("Android Development Guide", "ptit_student", "Public", 85, "Programming"));
-        programmingDocs.add(new Document("C++ Data Structures", "prof_x", "Public", 200, "Programming"));
-        categoryList.add(new Category("Programming", programmingDocs));
-
-        // Danh mục Science
-        List<Document> scienceDocs = new ArrayList<>();
-        scienceDocs.add(new Document("Quantum Physics", "einstein", "Public", 350, "Science"));
-        scienceDocs.add(new Document("Introduction to Biology", "darwin", "Public", 150, "Science"));
-        categoryList.add(new Category("Science", scienceDocs));
+    private void observeViewModel() {
+        viewModel.getCategorySections().observe(getViewLifecycleOwner(), categories -> {
+            if (categories != null) {
+                mainAdapter.updateData(categories);
+            }
+        });
     }
 }

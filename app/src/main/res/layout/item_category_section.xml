@@ -7,38 +7,65 @@
     android:paddingBottom="24dp">
 
     <!-- Category Header -->
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
         android:layout_marginBottom="16dp">
 
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@android:drawable/ic_menu_sort_by_size"
-            app:tint="@color/blue_login_btn"
-            android:layout_marginEnd="8dp" />
-
-        <TextView
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/trending_in"
-            android:textColor="@color/text_primary"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:layout_alignParentStart="true">
+
+            <FrameLayout
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="@drawable/bg_logo"
+                android:layout_marginEnd="12dp"
+                android:alpha="0.15">
+                <!-- Nền nhạt cho icon -->
+            </FrameLayout>
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_marginStart="-44dp"
+                android:layout_marginEnd="12dp"
+                android:src="@drawable/ic_trending_up"
+                app:tint="@color/blue_login_btn" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/trending_in"
+                android:textColor="@color/text_primary"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_category_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:text="Computer"
+                android:textColor="@color/blue_login_btn"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </LinearLayout>
 
         <TextView
-            android:id="@+id/tv_category_name"
+            android:id="@+id/tv_see_all"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:text="Category Name"
-            android:textColor="@color/blue_login_btn"
-            android:textSize="18sp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:text="See all"
+            android:textColor="@color/purple_logo"
+            android:textSize="14sp"
             android:textStyle="bold" />
-    </LinearLayout>
+    </RelativeLayout>
 
     <!-- Internal ListView for Documents -->
     <com.ptithcm.documentshub.utils.NonScrollListView

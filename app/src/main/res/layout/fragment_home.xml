@@ -6,7 +6,7 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-    <!-- Header Section (Static) -->
+    <!-- Header Section -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -15,30 +15,35 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <ImageView
+        <FrameLayout
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:background="@drawable/bg_logo"
-            android:padding="8dp"
-            android:src="@drawable/ic_book"
-            app:tint="@color/white" />
+            android:background="@drawable/bg_logo">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_book"
+                app:tint="@color/white" />
+        </FrameLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="@string/login_title"
+            android:layout_marginStart="12dp"
+            android:text="DocumentHub"
             android:textColor="@color/purple_logo"
             android:textSize="22sp"
             android:textStyle="bold" />
     </LinearLayout>
 
-    <!-- Search Section (Static) -->
+    <!-- Search Section -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="56dp"
         android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/bg_search_bar"
         android:gravity="center_vertical"
         android:orientation="horizontal"
@@ -53,7 +58,7 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="12dp"
             android:background="@android:color/transparent"
             android:hint="@string/hint_search"
             android:importantForAutofill="no"
@@ -63,7 +68,66 @@
             android:textSize="16sp" />
     </LinearLayout>
 
-    <!-- Main List Container (Dynamic) -->
+    <!-- Categories Section (Horizontal Scroll) -->
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:id="@+id/ll_categories_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <!-- Category Item (Selected) -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_category_item_selected"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="8dp"
+                android:text="Computer"
+                android:textColor="@color/purple_logo"
+                android:textStyle="bold" />
+
+            <!-- Category Item -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="8dp"
+                android:text="Programming"
+                android:textColor="@color/purple_logo"
+                android:alpha="0.6" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="8dp"
+                android:text="Science"
+                android:textColor="@color/purple_logo"
+                android:alpha="0.6" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="8dp"
+                android:text="Math"
+                android:textColor="@color/purple_logo"
+                android:alpha="0.6" />
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <!-- Main List for Sections (Trending in...) -->
     <ListView
         android:id="@+id/lv_main_content"
         android:layout_width="match_parent"

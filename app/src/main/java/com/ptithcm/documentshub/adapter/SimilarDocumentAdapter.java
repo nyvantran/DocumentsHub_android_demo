@@ -21,6 +21,11 @@ public class SimilarDocumentAdapter extends BaseAdapter {
         this.documents = documents;
     }
 
+    public void updateData(List<Document> newDocuments) {
+        this.documents = newDocuments;
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getCount() {
         return documents.size();

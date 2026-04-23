@@ -46,13 +46,21 @@ public class DocumentAdapter extends BaseAdapter {
 
         TextView tvTitle = convertView.findViewById(R.id.tv_doc_title);
         TextView tvAuthor = convertView.findViewById(R.id.tv_doc_author);
+        TextView tvVisibility = convertView.findViewById(R.id.tv_doc_visibility);
         TextView tvTag = convertView.findViewById(R.id.tv_doc_tag);
         TextView tvPages = convertView.findViewById(R.id.tv_doc_pages);
+        TextView tvViews = convertView.findViewById(R.id.tv_views_count);
+        TextView tvDownloads = convertView.findViewById(R.id.tv_downloads_count);
+        TextView tvLikes = convertView.findViewById(R.id.tv_likes_count);
 
         tvTitle.setText(document.getTitle());
-        tvAuthor.setText(document.getAuthor() + " • " + document.getVisibility());
+        tvAuthor.setText(document.getAuthor());
+        tvVisibility.setText(document.getVisibility());
         tvTag.setText(document.getCategory());
         tvPages.setText(document.getPages() + " pages");
+        tvViews.setText(String.valueOf(document.getViews()));
+        tvDownloads.setText(String.valueOf(document.getDownloads()));
+        tvLikes.setText(String.valueOf(document.getLikes()));
 
         return convertView;
     }

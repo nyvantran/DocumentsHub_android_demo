@@ -11,9 +11,9 @@ Tất cả các bản mockups/thiết kế giao diện (UI) hiện được lưu
 
 - **Ngôn ngữ:** Java.
 - **Giao diện (UI):** XML Layouts.
-- **Mạng & API:** sử dụng volley để xử lý API
-- **Kiến trúc:** MVC (Model-View-Controller) đơn giản, không sử dụng thư viện bên ngoài như MVVM
-  hoặc MVP.
+- **Mạng & API:** sử dụng Retrofit để xử lý API
+- **Kiến trúc:** MVVM để tách biệt rõ ràng giữa UI, logic nghiệp
+  vụ và dữ liệu.
 
 ## 🖼 Quy trình xử lý UI (BẮT BUỘC)
 
@@ -36,17 +36,17 @@ Code phải được đặt vào đúng package logic:
 - `com.ptithcm.documentshub.activity`: Chứa các Activities
 - `com.ptithcm.documentshub.fragment`: Chứa các Fragments
 - `com.ptithcm.documentshub.adapter`: Chứa các chứa các Adapter cho Listview hoặc Girdview.
-- `com.ptithcm.documentshub.model`: Chứa Data classes (Entities, DTOs).
+- `com.ptithcm.documentshub.model`: Chứa các đối tượng định nghĩa từ API 
+- `com.ptithcm.documentshub.viewmodel`: Chứa các ViewModel để xử lý logic nghiệp vụ và dữ liệu cho UI.
 - `com.ptithcm.documentshub.repository`: Logic gọi API theo kiến trúc DAO
 - `com.ptithcm.documentshub.utils`: Các hàm helpers (format ngày tháng, check permission).
+- `com.ptithcm.documentshub.network`: Chứa các cấu hình kết nối API (có thể sử dụng Retrofit).
 
 ## 🧠 Nguyên tắc Coding (AI Instructions)
 
 - **Đơn giản & Rõ ràng:** Code phải dễ đọc, tránh sử dụng các kỹ thuật phức tạp không cần thiết.
 - **Tái sử dụng:** Tạo các component có thể tái sử dụng (ví dụ: custom view, helper functions) để
   tránh lặp lại code.
-- **Không sử dụng thư viện bên ngoài:** Trừ khi có yêu cầu đặc biệt, hãy viết code thuần Java và
-  XML, không sử dụng thư viện như ButterKnife, Retrofit, hoặc Dagger.
 - **Tuân thủ quy tắc Android:** Sử dụng đúng lifecycle methods, xử lý permission, và đảm bảo hiệu
   suất tốt (tránh chạy công việc nặng trên main thread).
 - **Kiểm tra kỹ lưỡng:** Trước khi hoàn thành, hãy kiểm tra lại code để đảm bảo không có lỗi cú
@@ -77,4 +77,5 @@ Code phải được đặt vào đúng package logic:
 - các button muốn có hiệu ứng background thì thêm dòng `app:backgroundTint="@null"` vào file XML để
   giữ nguyên định dạng gốc của drawable
 - đọc lại file UPDATE_daytime_{hh-mm_dd-mm-yy}.md mới nhất. Để hiểu rõ hơn về những gì đã làm được
+- giải thích về các api ở file AI/config/api.md và config api ở AI/config/openapi.json 
 

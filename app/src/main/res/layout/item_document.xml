@@ -71,19 +71,48 @@
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/tv_doc_author"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="username1 • Public"
-                android:textColor="@color/text_secondary"
-                android:textSize="14sp" />
+                android:layout_marginTop="6dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_doc_author"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="username1"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp" />
+
+                <View
+                    android:layout_width="4dp"
+                    android:layout_height="4dp"
+                    android:layout_marginHorizontal="8dp"
+                    android:background="@drawable/ic_circle_small"
+                    android:alpha="0.3" />
+
+                <ImageView
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:src="@drawable/ic_globe"
+                    app:tint="@color/text_secondary" />
+
+                <TextView
+                    android:id="@+id/tv_doc_visibility"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text="Public"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp" />
+            </LinearLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp">
+                android:layout_marginTop="16dp">
 
                 <TextView
                     android:id="@+id/tv_doc_tag"
@@ -96,18 +125,78 @@
                     android:text="Computer"
                     android:textColor="@color/blue_login_btn"
                     android:textSize="12sp"
+                    android:textStyle="bold"
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true" />
 
-                <TextView
-                    android:id="@+id/tv_doc_pages"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:text="11 pages"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="12sp" />
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <!-- Views -->
+                    <ImageView
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:src="@drawable/ic_eye"
+                        app:tint="@color/text_secondary"
+                        android:alpha="0.5" />
+                    <TextView
+                        android:id="@+id/tv_views_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:text="0"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp" />
+
+                    <!-- Downloads -->
+                    <ImageView
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:layout_marginStart="8dp"
+                        android:src="@drawable/ic_download"
+                        app:tint="@color/text_secondary"
+                        android:alpha="0.5" />
+                    <TextView
+                        android:id="@+id/tv_downloads_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:text="0"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp" />
+
+                    <!-- Likes -->
+                    <ImageView
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:layout_marginStart="8dp"
+                        android:src="@drawable/ic_like"
+                        app:tint="@color/text_secondary"
+                        android:alpha="0.5" />
+                    <TextView
+                        android:id="@+id/tv_likes_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:text="0"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp" />
+
+                    <!-- Pages -->
+                    <TextView
+                        android:id="@+id/tv_doc_pages"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:text="11 pages"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp" />
+                </LinearLayout>
             </RelativeLayout>
         </LinearLayout>
     </LinearLayout>
