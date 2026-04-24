@@ -11,13 +11,16 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface DocumentService {
-    @GET("search")
+    @GET("api/v1/search")
     Call<ApiResponse<List<Document>>> searchDocuments(
             @Query("q") String query,
             @Query("page") int page,
-            @Query("limit") int limit
+            @Query("limit") int limit,
+            @Query("sort") String sort,
+            @Query("category_ids") Integer categoryId
     );
 
-    @GET("documents/{id}")
+
+    @GET("api/v1/documents/{id}")
     Call<ApiResponse<Document>> getDocumentDetail(@Path("id") String id);
 }

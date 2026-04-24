@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel;
 import com.ptithcm.documentshub.model.Category;
 import com.ptithcm.documentshub.model.Document;
 import com.ptithcm.documentshub.network.ApiResponse;
+import com.ptithcm.documentshub.repository.CategoryRepository;
 import com.ptithcm.documentshub.repository.DocumentRepository;
 
 import java.util.ArrayList;
@@ -17,49 +18,98 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class HomeViewModel extends ViewModel {
-    private DocumentRepository repository;
+    private DocumentRepository documentRepository;
+    private CategoryRepository categoryRepository;
     private MutableLiveData<List<Category>> categorySections = new MutableLiveData<>();
+    private MutableLiveData<List<Category>> categories = new MutableLiveData<>();
     private MutableLiveData<String> errorMessage = new MutableLiveData<>();
+    
+    private String currentQuery = "";
+    private Integer currentCategoryId = null;
 
     public HomeViewModel() {
-        repository = new DocumentRepository();
+        documentRepository = new DocumentRepository();
+        categoryRepository = new CategoryRepository();
     }
 
     public LiveData<List<Category>> getCategorySections() {
         return categorySections;
     }
 
+    public LiveData<List<Category>> getCategories() {
+        return categories;
+    }
+
     public LiveData<String> getErrorMessage() {
         return errorMessage;
     }
 
-    public void fetchHomeData() {
-        // Tạm thời gọi dummy data vì API thật chưa được thiết lập URL chính xác
-        loadDummyData();
+    public void searchDocuments(String query) {
+        this.currentQuery = (query == null) ? "" : query.trim();
+        executeSearch();
     }
 
-    private void loadDummyData() {
-        List<Category> categoryList = new ArrayList<>();
+    public void filterByCategory(Integer categoryId) {
+        if (categoryId != null && categoryId == -1) {
+            this.currentCategoryId = null;
+        } else {
+            this.currentCategoryId = categoryId;
+        }
+        executeSearch();
+    }
 
-        // Danh mục Computer
-        List<Document> computerDocs = new ArrayList<>();
-        computerDocs.add(new Document("Kiến trúc phần mềm", "tule193", "Public", 11, "Computer"));
-        computerDocs.add(new Document("Hệ điều hành", "admin", "Public", 45, "Computer"));
-        categoryList.add(new Category("Computer", computerDocs));
+    private void executeSearch() {
+        String displayTitle = currentQuery.isEmpty() ? "Trending Documents" : "Search Results for \"" + currentQuery + "\"";
 
-        // Danh mục Programming
-        List<Document> programmingDocs = new ArrayList<>();
-        programmingDocs.add(new Document("Java Core for Beginners", "java_master", "Public", 120, "Programming"));
-        programmingDocs.add(new Document("Android Development Guide", "ptit_student", "Public", 85, "Programming"));
-        programmingDocs.add(new Document("C++ Data Structures", "prof_x", "Public", 200, "Programming"));
-        categoryList.add(new Category("Programming", programmingDocs));
+        documentRepository.searchDocumentsByQuery(currentQuery, currentCategoryId, 1, 20, "-view", new Callback<ApiResponse<List<Document>>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<List<Document>>> call, Response<ApiResponse<List<Document>>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<Document> docs = response.body().getData();
+                    List<Category> searchResult = new ArrayList<>();
+                    searchResult.add(new Category(displayTitle, docs));
+                    categorySections.setValue(searchResult);
+                } else {
+                    errorMessage.setValue("Failed to fetch documents");
+                }
+            }
 
-        // Danh mục Science
-        List<Document> scienceDocs = new ArrayList<>();
-        scienceDocs.add(new Document("Quantum Physics", "einstein", "Public", 350, "Science"));
-        scienceDocs.add(new Document("Introduction to Biology", "darwin", "Public", 150, "Science"));
-        categoryList.add(new Category("Science", scienceDocs));
+            @Override
+            public void onFailure(Call<ApiResponse<List<Document>>> call, Throwable t) {
+                errorMessage.setValue(t.getMessage());
+            }
+        });
+    }
 
-        categorySections.setValue(categoryList);
+    public void fetchHomeData() {
+        fetchCategories();
+        searchDocuments(""); // Fetch trending documents by default
+    }
+
+    private void fetchCategories() {
+        categoryRepository.getCategories(new Callback<ApiResponse<List<Category>>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<List<Category>>> call, Response<ApiResponse<List<Category>>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<Category> categoryList = new ArrayList<>();
+                    // Thêm phần tử mặc định ALL
+                    Category allCategory = new Category("ALL", null);
+                    allCategory.setId(-1); // ID đặc biệt cho ALL
+                    categoryList.add(allCategory);
+                    
+                    if (response.body().getData() != null) {
+                        categoryList.addAll(response.body().getData());
+                    }
+                    categories.setValue(categoryList);
+                } else {
+                    errorMessage.setValue("Failed to fetch categories");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<List<Category>>> call, Throwable t) {
+                errorMessage.setValue(t.getMessage());
+            }
+        });
     }
 }

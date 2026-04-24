@@ -77,5 +77,6 @@ Code phải được đặt vào đúng package logic:
 - các button muốn có hiệu ứng background thì thêm dòng `app:backgroundTint="@null"` vào file XML để
   giữ nguyên định dạng gốc của drawable
 - đọc lại file UPDATE_daytime_{hh-mm_dd-mm-yy}.md mới nhất. Để hiểu rõ hơn về những gì đã làm được
-- giải thích về các api ở file AI/config/api.md và config api ở AI/config/openapi.json 
+- giải thích về các api ở file AI/config/api.md và config api ở AI/config/openapi.json
+- dự án đã xin quyền truy cập internet 
 

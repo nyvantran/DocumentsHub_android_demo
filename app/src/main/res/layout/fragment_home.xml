@@ -56,76 +56,32 @@
             app:tint="@color/text_secondary" />
 
         <EditText
+            android:id="@+id/et_search"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="12dp"
             android:background="@android:color/transparent"
             android:hint="@string/hint_search"
+            android:imeOptions="actionSearch"
             android:importantForAutofill="no"
             android:inputType="text"
+            android:singleLine="true"
             android:textColor="@color/text_primary"
             android:textColorHint="@color/text_secondary"
             android:textSize="16sp" />
     </LinearLayout>
 
-    <!-- Categories Section (Horizontal Scroll) -->
-    <HorizontalScrollView
+    <!-- Categories Section (Horizontal List) -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_categories"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        android:clipToPadding="false"
+        android:orientation="horizontal"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
-        android:scrollbars="none">
-
-        <LinearLayout
-            android:id="@+id/ll_categories_container"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <!-- Category Item (Selected) -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_category_item_selected"
-                android:paddingHorizontal="16dp"
-                android:paddingVertical="8dp"
-                android:text="Computer"
-                android:textColor="@color/purple_logo"
-                android:textStyle="bold" />
-
-            <!-- Category Item -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:paddingHorizontal="16dp"
-                android:paddingVertical="8dp"
-                android:text="Programming"
-                android:textColor="@color/purple_logo"
-                android:alpha="0.6" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:paddingHorizontal="16dp"
-                android:paddingVertical="8dp"
-                android:text="Science"
-                android:textColor="@color/purple_logo"
-                android:alpha="0.6" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:paddingHorizontal="16dp"
-                android:paddingVertical="8dp"
-                android:text="Math"
-                android:textColor="@color/purple_logo"
-                android:alpha="0.6" />
-        </LinearLayout>
-    </HorizontalScrollView>
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
     <!-- Main List for Sections (Trending in...) -->
     <ListView

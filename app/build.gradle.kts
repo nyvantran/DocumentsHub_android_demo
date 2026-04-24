@@ -44,6 +44,7 @@ dependencies {
     implementation(libs.lifecycle.livedata)
     implementation(libs.retrofit)
     implementation(libs.retrofit.gson)
+    implementation(libs.glide)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

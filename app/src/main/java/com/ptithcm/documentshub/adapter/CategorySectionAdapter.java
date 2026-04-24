@@ -62,7 +62,9 @@ public class CategorySectionAdapter extends BaseAdapter {
 
         // Chuyển sang màn hình chi tiết tài liệu khi nhấn vào một item
         lvTrending.setOnItemClickListener((parent1, view1, position1, id) -> {
+            com.ptithcm.documentshub.model.Document document = category.getTrendingDocuments().get(position1);
             Intent intent = new Intent(context, DocumentActivity.class);
+            intent.putExtra("DOCUMENT_ID", document.getId());
             context.startActivity(intent);
         });
 
