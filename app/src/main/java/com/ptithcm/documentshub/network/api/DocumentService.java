@@ -23,4 +23,7 @@ public interface DocumentService {
 
     @GET("api/v1/documents/{id}")
     Call<ApiResponse<Document>> getDocumentDetail(@Path("id") String id);
+
+    @GET("api/v1/documents/{id}/download")
+    Call<ApiResponse<String>> getDownloadUrl(@Path("id") String id);
 }

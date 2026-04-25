@@ -1,27 +1,35 @@
 package com.ptithcm.documentshub.activity;
 
+import android.app.DownloadManager;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.pdf.PdfRenderer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
 import com.ptithcm.documentshub.R;
+import com.ptithcm.documentshub.adapter.PdfPageAdapter;
 import com.ptithcm.documentshub.adapter.SimilarDocumentAdapter;
 import com.ptithcm.documentshub.model.Document;
 import com.ptithcm.documentshub.utils.NonScrollListView;
+import com.ptithcm.documentshub.utils.PdfCacheManager;
 import com.ptithcm.documentshub.viewmodel.DocumentViewModel;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class DocumentActivity extends AppCompatActivity {
@@ -37,7 +45,7 @@ public class DocumentActivity extends AppCompatActivity {
     private ImageButton btnSave;
     private ImageButton btnReport;
     private ImageButton btnEditDoc;
-    private WebView wvPdfPreview;
+    private RecyclerView rvPdfPreview;
     private LinearLayout layoutDescriptionHeader;
     private ImageView ivDescriptionArrow;
     private TextView tvDescription;
@@ -46,16 +54,18 @@ public class DocumentActivity extends AppCompatActivity {
     private boolean isDescriptionExpanded = true;
     private DocumentViewModel viewModel;
     private SimilarDocumentAdapter similarAdapter;
+    private PdfPageAdapter pdfAdapter;
+    private PdfCacheManager pdfCacheManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_document);
 
+        pdfCacheManager = new PdfCacheManager(this);
         initViews();
         setupViewModel();
         setupListeners();
-        setupWebView();
 
         String documentId = getIntent().getStringExtra("DOCUMENT_ID");
         if (documentId == null) documentId = "1";
@@ -74,26 +84,16 @@ public class DocumentActivity extends AppCompatActivity {
         btnSave = findViewById(R.id.btn_save);
         btnReport = findViewById(R.id.btn_report);
         btnEditDoc = findViewById(R.id.btn_edit_doc);
-        wvPdfPreview = findViewById(R.id.wv_pdf_preview);
+        rvPdfPreview = findViewById(R.id.rv_pdf_preview);
         layoutDescriptionHeader = findViewById(R.id.layout_description_header);
         ivDescriptionArrow = findViewById(R.id.iv_description_arrow);
         tvDescription = findViewById(R.id.tv_description);
         lvSimilarDocuments = findViewById(R.id.lv_similar_documents);
 
+        rvPdfPreview.setLayoutManager(new LinearLayoutManager(this));
+        
         similarAdapter = new SimilarDocumentAdapter(this, new ArrayList<>());
         lvSimilarDocuments.setAdapter(similarAdapter);
-    }
-
-    private void setupWebView() {
-        if (wvPdfPreview != null) {
-            wvPdfPreview.getSettings().setJavaScriptEnabled(true);
-            wvPdfPreview.getSettings().setAllowFileAccess(true);
-            wvPdfPreview.getSettings().setDomStorageEnabled(true);
-            wvPdfPreview.getSettings().setSupportZoom(true);
-            wvPdfPreview.getSettings().setBuiltInZoomControls(true);
-            wvPdfPreview.getSettings().setDisplayZoomControls(false);
-            wvPdfPreview.setWebViewClient(new WebViewClient());
-        }
     }
 
     private void setupViewModel() {
@@ -104,6 +104,36 @@ public class DocumentActivity extends AppCompatActivity {
                 similarAdapter.updateData(documents);
             }
         });
+
+        // Observe official download URL
+        viewModel.getDownloadUrl().observe(this, url -> {
+            android.util.Log.d("DocumentActivity", "Download URL observed: " + url);
+            if (url != null && !url.isEmpty()) {
+                startDownload(url);
+                viewModel.clearDownloadUrl(); // Prevent re-triggering on config change
+            }
+        });
+    }
+
+    private void startDownload(String url) {
+        android.util.Log.d("DocumentActivity", "Starting download with URL: " + url);
+        String downloadUrl = url.replace("localhost", "10.0.2.2");
+        Document doc = viewModel.getDocument().getValue();
+        String fileName = (doc != null ? doc.getTitle() : "document") + ".pdf";
+
+        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(downloadUrl));
+        request.setTitle("Downloading " + fileName);
+        request.setDescription("DocumentHub");
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName);
+        request.setAllowedOverMetered(true);
+        request.setAllowedOverRoaming(true);
+
+        DownloadManager downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+        if (downloadManager != null) {
+            downloadManager.enqueue(request);
+            Toast.makeText(this, "Download started...", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void updateUI(Document document) {
@@ -114,11 +144,33 @@ public class DocumentActivity extends AppCompatActivity {
         tvPostBy.setText(getString(R.string.label_post_by) + (document.getOwner() != null ? document.getOwner() : "Anonymous"));
         tvDescription.setText(document.getDesc());
 
-        // Hiển thị PDF qua Google Drive Viewer trong WebView (Khôi phục giải pháp cũ)
+        // Hiển thị PDF bằng PdfRenderer
         if (document.getFile_preview_url() != null && !document.getFile_preview_url().isEmpty()) {
             String rawUrl = document.getFile_preview_url().replace("localhost", "10.0.2.2");
-            String googleDocsUrl = "https://docs.google.com/viewer?url=" + rawUrl + "&embedded=true";
-            wvPdfPreview.loadUrl(googleDocsUrl);
+            String docId = String.valueOf(document.getId());
+            
+            pdfCacheManager.getPdfFile(docId, rawUrl, new PdfCacheManager.PdfDownloadListener() {
+                @Override
+                public void onDownloadSuccess(File file) {
+                    runOnUiThread(() -> {
+                        try {
+                            if (pdfAdapter != null) {
+                                pdfAdapter.closeRenderer();
+                            }
+                            PdfRenderer renderer = PdfCacheManager.getRenderer(file);
+                            pdfAdapter = new PdfPageAdapter(renderer);
+                            rvPdfPreview.setAdapter(pdfAdapter);
+                        } catch (Exception e) {
+                            Toast.makeText(DocumentActivity.this, "Error rendering PDF", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+
+                @Override
+                public void onDownloadFailure(Exception e) {
+                    runOnUiThread(() -> Toast.makeText(DocumentActivity.this, "Failed to load PDF", Toast.LENGTH_SHORT).show());
+                }
+            });
         }
 
         // Cập nhật Tags
@@ -160,11 +212,18 @@ public class DocumentActivity extends AppCompatActivity {
 
         btnDownload.setOnClickListener(v -> {
             Document doc = viewModel.getDocument().getValue();
-            if (doc != null && doc.getFile_preview_url() != null) {
-                String downloadUrl = doc.getFile_preview_url().replace("localhost", "10.0.2.2");
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(downloadUrl));
-                startActivity(intent);
+            if (doc != null) {
+                Toast.makeText(this,String.valueOf(doc.getId()) , Toast.LENGTH_SHORT).show();
+                viewModel.fetchDownloadUrl(String.valueOf(doc.getId()));
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (pdfAdapter != null) {
+            pdfAdapter.closeRenderer();
+        }
     }
 }

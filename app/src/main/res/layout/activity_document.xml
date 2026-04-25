@@ -241,10 +241,11 @@
                 app:cardCornerRadius="16dp"
                 app:cardElevation="2dp">
 
-                <WebView
-                    android:id="@+id/wv_pdf_preview"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_pdf_preview"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:scrollbars="vertical" />
             </androidx.cardview.widget.CardView>
 
             <!-- Similar Documents Section -->

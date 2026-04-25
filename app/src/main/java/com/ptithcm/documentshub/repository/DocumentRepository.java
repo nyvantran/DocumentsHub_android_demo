@@ -24,4 +24,8 @@ public class DocumentRepository {
     public void getDocumentDetail(String id, Callback<ApiResponse<Document>> callback) {
         documentService.getDocumentDetail(id).enqueue(callback);
     }
+
+    public void getDownloadUrl(String id, Callback<ApiResponse<String>> callback) {
+        documentService.getDownloadUrl(id).enqueue(callback);
+    }
 }

@@ -1,5 +1,7 @@
 package com.ptithcm.documentshub.viewmodel;
 
+import android.widget.Toast;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -19,6 +21,7 @@ public class DocumentViewModel extends ViewModel {
     private DocumentRepository repository;
     private MutableLiveData<Document> document = new MutableLiveData<>();
     private MutableLiveData<List<Document>> similarDocuments = new MutableLiveData<>();
+    private MutableLiveData<String> downloadUrl = new MutableLiveData<>();
     private MutableLiveData<String> errorMessage = new MutableLiveData<>();
 
     public DocumentViewModel() {
@@ -29,8 +32,39 @@ public class DocumentViewModel extends ViewModel {
         return document;
     }
 
+    public LiveData<String> getDownloadUrl() {
+        return downloadUrl;
+    }
+
     public LiveData<List<Document>> getSimilarDocuments() {
         return similarDocuments;
+    }
+
+    public void fetchDownloadUrl(String id) {
+        android.util.Log.d("DocumentViewModel", "Fetching download URL for ID: " + id);
+        repository.getDownloadUrl(id, new Callback<ApiResponse<String>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<String>> call, Response<ApiResponse<String>> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    String url = response.body().getData();
+                    android.util.Log.d("DocumentViewModel", "Download URL received: " + url);
+                    downloadUrl.setValue(url);
+                } else {
+                    android.util.Log.e("DocumentViewModel", "Failed to get download URL: " + (response.body() != null ? response.body().getMessage() : "Unknown error"));
+                    errorMessage.setValue("Failed to get download URL");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<String>> call, Throwable t) {
+                android.util.Log.e("DocumentViewModel", "Network error fetching download URL", t);
+                errorMessage.setValue("Network error: " + t.getMessage());
+            }
+        });
+    }
+
+    public void clearDownloadUrl() {
+        downloadUrl.setValue(null);
     }
 
     public void fetchDocumentDetail(String id) {
@@ -58,7 +92,7 @@ public class DocumentViewModel extends ViewModel {
     }
 
     private void loadDummyDocument(String id) {
-        Document dummy = new Document(id, "Lập trình Android với Java", "Sơn Tùng M-TP", "20/04/2024", 1500, 450, 89, "", 
+        Document dummy = new Document(id, "Lập trình Android với Java", "Sơn Tùng M-TP", "20/04/2024", 1500, 450, 89, "",
                 "Tài liệu hướng dẫn chi tiết về lập trình Android sử dụng ngôn ngữ Java từ cơ bản đến nâng cao. Nội dung bao gồm Activity, Fragment, Intent, RecyclerView và kiến trúc MVVM.");
         document.setValue(dummy);
         loadDummySimilar();
