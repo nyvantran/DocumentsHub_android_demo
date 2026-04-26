@@ -28,4 +28,12 @@ public class DocumentRepository {
     public void getDownloadUrl(String id, Callback<ApiResponse<String>> callback) {
         documentService.getDownloadUrl(id).enqueue(callback);
     }
+
+    public void likeDocument(String id, Callback<ApiResponse<Void>> callback) {
+        documentService.likeDocument(id).enqueue(callback);
+    }
+
+    public void unlikeDocument(String id, Callback<ApiResponse<Void>> callback) {
+        documentService.unlikeDocument(id).enqueue(callback);
+    }
 }

@@ -91,7 +91,7 @@ public class DocumentActivity extends AppCompatActivity {
         lvSimilarDocuments = findViewById(R.id.lv_similar_documents);
 
         rvPdfPreview.setLayoutManager(new LinearLayoutManager(this));
-        
+
         similarAdapter = new SimilarDocumentAdapter(this, new ArrayList<>());
         lvSimilarDocuments.setAdapter(similarAdapter);
     }
@@ -141,14 +141,14 @@ public class DocumentActivity extends AppCompatActivity {
 
         tvDocumentTitle.setText(document.getTitle());
         tvToolbarTitle.setText(document.getTitle());
-        tvPostBy.setText(getString(R.string.label_post_by) + (document.getOwner() != null ? document.getOwner() : "Anonymous"));
+        tvPostBy.setText(getString(R.string.label_post_by) + " " + (document.getOwner() != null ? document.getOwner() : "Anonymous"));
         tvDescription.setText(document.getDesc());
 
         // Hiển thị PDF bằng PdfRenderer
         if (document.getFile_preview_url() != null && !document.getFile_preview_url().isEmpty()) {
             String rawUrl = document.getFile_preview_url().replace("localhost", "10.0.2.2");
             String docId = String.valueOf(document.getId());
-            
+
             pdfCacheManager.getPdfFile(docId, rawUrl, new PdfCacheManager.PdfDownloadListener() {
                 @Override
                 public void onDownloadSuccess(File file) {
@@ -189,16 +189,16 @@ public class DocumentActivity extends AppCompatActivity {
         btnLike.setText(String.valueOf(document.getLike_count()));
 
         if (document.getLiked()) {
-            btnLike.setEnabled(false);
             btnLike.setAlpha(0.5f);
         } else {
-            btnLike.setEnabled(true);
             btnLike.setAlpha(1.0f);
         }
     }
 
     private void setupListeners() {
         btnBack.setOnClickListener(v -> finish());
+
+        btnLike.setOnClickListener(v -> viewModel.toggleLike());
 
         layoutDescriptionHeader.setOnClickListener(v -> {
             isDescriptionExpanded = !isDescriptionExpanded;
@@ -213,7 +213,7 @@ public class DocumentActivity extends AppCompatActivity {
         btnDownload.setOnClickListener(v -> {
             Document doc = viewModel.getDocument().getValue();
             if (doc != null) {
-                Toast.makeText(this,String.valueOf(doc.getId()) , Toast.LENGTH_SHORT).show();
+//                Toast.makeText(this, String.valueOf(doc.getId()), Toast.LENGTH_SHORT).show();
                 viewModel.fetchDownloadUrl(String.valueOf(doc.getId()));
             }
         });

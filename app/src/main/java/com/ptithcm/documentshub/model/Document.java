@@ -60,10 +60,17 @@ public class Document {
         return status;
     }
 
+    public void setLiked(boolean liked) {
+        this.liked = liked;
+    }
+
     public boolean getLiked() {
         return liked;
     }
 
+    public void setLike_count(int like_count) {
+        this.like_count = like_count;
+    }
 
     // Getters
     public String getId() {

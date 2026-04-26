@@ -33,8 +33,8 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        tokenManager = new TokenManager(this);
-        
+        tokenManager = TokenManager.getInstance(this);
+
         // Kiểm tra nếu đã có token thì chuyển thẳng vào Home (tùy chọn)
         if (tokenManager.getAccessToken() != null) {
             // startHomeActivity();
@@ -43,6 +43,7 @@ public class LoginActivity extends AppCompatActivity {
         initViews();
         setupViewModel();
         setupListeners();
+
     }
 
     private void initViews() {
@@ -69,7 +70,7 @@ public class LoginActivity extends AppCompatActivity {
                 // Lưu token
                 tokenManager.saveTokens(loginResponse.getAccessToken(), loginResponse.getRefreshToken());
                 Toast.makeText(this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
-                
+
                 // Chuyển sang HomeActivity
                 startHomeActivity();
             }

@@ -67,6 +67,39 @@ public class DocumentViewModel extends ViewModel {
         downloadUrl.setValue(null);
     }
 
+    public void toggleLike() {
+        Document currentDoc = document.getValue();
+        if (currentDoc == null) return;
+
+        boolean isLiked = currentDoc.getLiked();
+        String docId = currentDoc.getId();
+
+        Callback<ApiResponse<Void>> callback = new Callback<ApiResponse<Void>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<Void>> call, Response<ApiResponse<Void>> response) {
+                if (response.isSuccessful()) {
+                    // Update local state
+                    currentDoc.setLiked(!isLiked);
+                    currentDoc.setLike_count(isLiked ? currentDoc.getLike_count() - 1 : currentDoc.getLike_count() + 1);
+                    document.setValue(currentDoc);
+                } else {
+                    errorMessage.setValue("Failed to update like status");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<Void>> call, Throwable t) {
+                errorMessage.setValue("Network error: " + t.getMessage());
+            }
+        };
+
+        if (isLiked) {
+            repository.unlikeDocument(docId, callback);
+        } else {
+            repository.likeDocument(docId, callback);
+        }
+    }
+
     public void fetchDocumentDetail(String id) {
         repository.getDocumentDetail(id, new Callback<ApiResponse<Document>>() {
             @Override

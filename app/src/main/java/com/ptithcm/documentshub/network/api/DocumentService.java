@@ -6,7 +6,9 @@ import com.ptithcm.documentshub.network.ApiResponse;
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -26,4 +28,10 @@ public interface DocumentService {
 
     @GET("api/v1/documents/{id}/download")
     Call<ApiResponse<String>> getDownloadUrl(@Path("id") String id);
+
+    @PUT("api/v1/documents/{id}/like")
+    Call<ApiResponse<Void>> likeDocument(@Path("id") String id);
+
+    @DELETE("api/v1/documents/{id}/like")
+    Call<ApiResponse<Void>> unlikeDocument(@Path("id") String id);
 }

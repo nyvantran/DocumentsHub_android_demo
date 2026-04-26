@@ -7,6 +7,7 @@ import com.ptithcm.documentshub.network.ApiResponse;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 
@@ -14,8 +15,9 @@ public interface AuthService {
     @POST("api/v1/auth/login")
     Call<ApiResponse<LoginResponse>> login(@Body LoginRequest request);
 
+    @FormUrlEncoded
     @POST("api/v1/auth/refresh")
-    Call<ApiResponse<LoginResponse>> refresh(@Body RefreshRequest request);
+    Call<ApiResponse<String>> refresh(@Body RefreshRequest request);
 
     @GET("api/v1/auth/whoami")
     Call<ApiResponse<Object>> whoami();
