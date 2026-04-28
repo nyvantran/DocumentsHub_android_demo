@@ -36,8 +36,9 @@ Code phải được đặt vào đúng package logic:
 - `com.ptithcm.documentshub.activity`: Chứa các Activities
 - `com.ptithcm.documentshub.fragment`: Chứa các Fragments
 - `com.ptithcm.documentshub.adapter`: Chứa các chứa các Adapter cho Listview hoặc Girdview.
-- `com.ptithcm.documentshub.model`: Chứa các đối tượng định nghĩa từ API 
-- `com.ptithcm.documentshub.viewmodel`: Chứa các ViewModel để xử lý logic nghiệp vụ và dữ liệu cho UI.
+- `com.ptithcm.documentshub.model`: Chứa các đối tượng định nghĩa từ API
+- `com.ptithcm.documentshub.viewmodel`: Chứa các ViewModel để xử lý logic nghiệp vụ và dữ liệu cho
+  UI.
 - `com.ptithcm.documentshub.repository`: Logic gọi API theo kiến trúc DAO
 - `com.ptithcm.documentshub.utils`: Các hàm helpers (format ngày tháng, check permission).
 - `com.ptithcm.documentshub.network`: Chứa các cấu hình kết nối API (có thể sử dụng Retrofit).
@@ -78,5 +79,9 @@ Code phải được đặt vào đúng package logic:
   giữ nguyên định dạng gốc của drawable
 - đọc lại file UPDATE_daytime_{hh-mm_dd-mm-yy}.md mới nhất. Để hiểu rõ hơn về những gì đã làm được
 - giải thích về các api ở file AI/config/api.md và config api ở AI/config/openapi.json
-- dự án đã xin quyền truy cập internet 
+- dự án đã xin quyền truy cập internet
+- dự án đã có sẵn một số thư viện như Retrofit, Gson, v.v. để hỗ trợ việc gọi API và xử lý dữ liệu
+- khi mà tạo nút thì phải dùng button chuẩn của android, không được dùng imageview hoặc textview để
+  tạo nút
+
 

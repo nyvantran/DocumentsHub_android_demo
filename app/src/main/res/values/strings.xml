@@ -58,4 +58,17 @@
     <string name="dummy_zoom_percent">100%</string>
     <string name="dummy_views">0</string>
     <string name="dummy_likes">0</string>
+
+    <string name="title_register">Register Account</string>
+    <string name="label_email">Email</string>
+    <string name="btn_next">Next \u2192</string>
+    <string name="already_have_account">Already have an account? </string>
+    <string name="login">Login</string>
+    <string name="otp_message">We just sent an OTP to your email to verify registration</string>
+    <string name="label_otp">OTP</string>
+    <string name="label_username">Username</string>
+    <string name="note_register_success">Note: After register success, you can login by username or email</string>
+    <string name="label_password">Password</string>
+    <string name="hint_create_password">Create password</string>
+    <string name="btn_finish">Finish</string>
 </resources>

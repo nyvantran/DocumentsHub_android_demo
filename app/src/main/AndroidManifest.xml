@@ -43,6 +43,18 @@
             android:name=".activity.DocumentActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".activity.SignUpActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activity.SignUpOTPActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activity.SignUpUserPasswordActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>

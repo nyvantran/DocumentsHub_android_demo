@@ -104,8 +104,8 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         tvSignUpLink.setOnClickListener(v -> {
-            // Chuyển sang RegisterActivity (nếu có)
-            Toast.makeText(LoginActivity.this, "Chuyển sang màn hình đăng ký", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
+            startActivity(intent);
         });
     }
 

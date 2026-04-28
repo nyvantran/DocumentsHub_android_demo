@@ -174,65 +174,141 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
-                        <!-- Overview Tab (Selected) -->
+                        <!-- Overview Tab -->
                         <LinearLayout
+                            android:id="@+id/tab_overview"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@color/tab_selected_bg"
                             android:orientation="vertical"
                             android:paddingHorizontal="16dp"
                             android:paddingVertical="12dp">
 
                             <TextView
+                                android:id="@+id/tv_tab_overview"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/label_overview"
-                                android:textColor="@color/tab_text_selected"
+                                android:textColor="@color/text_secondary"
                                 android:textSize="14sp"
                                 android:textStyle="bold" />
 
                             <View
+                                android:id="@+id/indicator_overview"
                                 android:layout_width="match_parent"
                                 android:layout_height="2dp"
                                 android:layout_marginTop="4dp"
-                                android:background="@color/tab_text_selected" />
+                                android:background="@color/tab_text_selected"
+                                android:visibility="invisible" />
                         </LinearLayout>
 
-                        <TextView
+                        <!-- Documents Tab -->
+                        <LinearLayout
+                            android:id="@+id/tab_documents"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:orientation="vertical"
                             android:paddingHorizontal="16dp"
-                            android:paddingVertical="12dp"
-                            android:text="@string/label_documents"
-                            android:textColor="@color/text_secondary"
-                            android:textSize="14sp" />
+                            android:paddingVertical="12dp">
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:paddingHorizontal="16dp"
-                            android:paddingVertical="12dp"
-                            android:text="@string/label_collections"
-                            android:textColor="@color/text_secondary"
-                            android:textSize="14sp" />
+                            <TextView
+                                android:id="@+id/tv_tab_documents"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/label_documents"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:paddingHorizontal="16dp"
-                            android:paddingVertical="12dp"
-                            android:text="@string/label_liked"
-                            android:textColor="@color/text_secondary"
-                            android:textSize="14sp" />
+                            <View
+                                android:id="@+id/indicator_documents"
+                                android:layout_width="match_parent"
+                                android:layout_height="2dp"
+                                android:layout_marginTop="4dp"
+                                android:background="@color/tab_text_selected"
+                                android:visibility="invisible" />
+                        </LinearLayout>
 
-                        <TextView
+                        <!-- Collections Tab -->
+                        <LinearLayout
+                            android:id="@+id/tab_collections"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:orientation="vertical"
                             android:paddingHorizontal="16dp"
-                            android:paddingVertical="12dp"
-                            android:text="@string/label_trash"
-                            android:textColor="@color/text_secondary"
-                            android:textSize="14sp" />
+                            android:paddingVertical="12dp">
+
+                            <TextView
+                                android:id="@+id/tv_tab_collections"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/label_collections"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+                            <View
+                                android:id="@+id/indicator_collections"
+                                android:layout_width="match_parent"
+                                android:layout_height="2dp"
+                                android:layout_marginTop="4dp"
+                                android:background="@color/tab_text_selected"
+                                android:visibility="invisible" />
+                        </LinearLayout>
+
+                        <!-- Liked Tab -->
+                        <LinearLayout
+                            android:id="@+id/tab_liked"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:paddingHorizontal="16dp"
+                            android:paddingVertical="12dp">
+
+                            <TextView
+                                android:id="@+id/tv_tab_liked"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/label_liked"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+                            <View
+                                android:id="@+id/indicator_liked"
+                                android:layout_width="match_parent"
+                                android:layout_height="2dp"
+                                android:layout_marginTop="4dp"
+                                android:background="@color/tab_text_selected"
+                                android:visibility="invisible" />
+                        </LinearLayout>
+
+                        <!-- Trash Tab -->
+                        <LinearLayout
+                            android:id="@+id/tab_trash"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:paddingHorizontal="16dp"
+                            android:paddingVertical="12dp">
+
+                            <TextView
+                                android:id="@+id/tv_tab_trash"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/label_trash"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+                            <View
+                                android:id="@+id/indicator_trash"
+                                android:layout_width="match_parent"
+                                android:layout_height="2dp"
+                                android:layout_marginTop="4dp"
+                                android:background="@color/tab_text_selected"
+                                android:visibility="invisible" />
+                        </LinearLayout>
+
                     </LinearLayout>
                 </HorizontalScrollView>
 
@@ -241,20 +317,14 @@
                     android:layout_height="1dp"
                     android:background="@color/tab_divider" />
 
-                <LinearLayout
+                <FrameLayout
                     android:id="@+id/tab_content_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:minHeight="200dp"
-                    android:padding="16dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/dummy_user_bio"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="14sp" />
-                </LinearLayout>
+                    android:padding="8dp">
+                    <!-- ListView or GridView will be injected here -->
+                </FrameLayout>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
