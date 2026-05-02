@@ -2,7 +2,6 @@ package com.ptithcm.documentshub.network;
 
 import android.content.Context;
 
-import com.ptithcm.documentshub.network.api.AuthService;
 import com.ptithcm.documentshub.utils.TokenManager;
 
 import java.util.concurrent.TimeUnit;
@@ -42,8 +41,6 @@ public class ApiClient {
 
 
     }
-
-
 
     public static synchronized void init(Context context) {
         if (instance == null) {

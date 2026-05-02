@@ -3,14 +3,13 @@ package com.ptithcm.documentshub.model;
 public class Collection {
     private String id;
     private String name;
-    private int itemCount;
-    private String thumbnailUrl;
+    private int total_items;
 
-    public Collection(String id, String name, int itemCount, String thumbnailUrl) {
+
+    public Collection(String id, String name, int itemCount) {
         this.id = id;
         this.name = name;
-        this.itemCount = itemCount;
-        this.thumbnailUrl = thumbnailUrl;
+        this.total_items = itemCount;
     }
 
     public String getId() {
@@ -21,11 +20,8 @@ public class Collection {
         return name;
     }
 
-    public int getItemCount() {
-        return itemCount;
+    public int getTotal_items() {
+        return total_items;
     }
 
-    public String getThumbnailUrl() {
-        return thumbnailUrl;
-    }
 }

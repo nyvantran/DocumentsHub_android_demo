@@ -6,8 +6,10 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.ptithcm.documentshub.model.Collection;
 import com.ptithcm.documentshub.model.Document;
 import com.ptithcm.documentshub.network.ApiResponse;
+import com.ptithcm.documentshub.repository.CollectionRepository;
 import com.ptithcm.documentshub.repository.DocumentRepository;
 
 import java.util.ArrayList;
@@ -19,13 +21,17 @@ import retrofit2.Response;
 
 public class DocumentViewModel extends ViewModel {
     private DocumentRepository repository;
+    private CollectionRepository collectionRepository;
     private MutableLiveData<Document> document = new MutableLiveData<>();
     private MutableLiveData<List<Document>> similarDocuments = new MutableLiveData<>();
+    private MutableLiveData<List<Collection>> myCollections = new MutableLiveData<>();
     private MutableLiveData<String> downloadUrl = new MutableLiveData<>();
+    private MutableLiveData<String> statusMessage = new MutableLiveData<>();
     private MutableLiveData<String> errorMessage = new MutableLiveData<>();
 
     public DocumentViewModel() {
         repository = new DocumentRepository();
+        collectionRepository = new CollectionRepository();
     }
 
     public LiveData<Document> getDocument() {
@@ -38,6 +44,53 @@ public class DocumentViewModel extends ViewModel {
 
     public LiveData<List<Document>> getSimilarDocuments() {
         return similarDocuments;
+    }
+
+    public LiveData<List<Collection>> getMyCollections() {
+        return myCollections;
+    }
+
+    public LiveData<String> getStatusMessage() {
+        return statusMessage;
+    }
+
+    public void fetchMyCollections() {
+        collectionRepository.getMyCollections(1, 20, new Callback<ApiResponse<List<Collection>>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<List<Collection>>> call, Response<ApiResponse<List<Collection>>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    myCollections.setValue(response.body().getData());
+                } else {
+                    errorMessage.setValue("Failed to fetch collections");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<List<Collection>>> call, Throwable t) {
+                errorMessage.setValue(t.getMessage());
+            }
+        });
+    }
+
+    public void addItemToCollection(String collectionId) {
+        Document currentDoc = document.getValue();
+        if (currentDoc == null) return;
+
+        collectionRepository.addItemToCollection(collectionId, currentDoc.getId(), new Callback<ApiResponse<Void>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<Void>> call, Response<ApiResponse<Void>> response) {
+                if (response.isSuccessful()) {
+                    statusMessage.setValue("Đã lưu vào bộ sưu tập");
+                } else {
+                    errorMessage.setValue("Không thể lưu vào bộ sưu tập");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<Void>> call, Throwable t) {
+                errorMessage.setValue(t.getMessage());
+            }
+        });
     }
 
     public void fetchDownloadUrl(String id) {

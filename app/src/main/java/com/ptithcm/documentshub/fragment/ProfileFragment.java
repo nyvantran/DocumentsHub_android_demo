@@ -19,9 +19,12 @@ import com.ptithcm.documentshub.activity.DocumentActivity;
 
 import android.widget.FrameLayout;
 import android.widget.GridView;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ptithcm.documentshub.adapter.ProfileCollectionAdapter;
@@ -49,12 +52,14 @@ public class ProfileFragment extends Fragment {
     private FrameLayout tabContentContainer;
 
     private List<Document> myDocumentsDummy = new ArrayList<>();
-    private List<Collection> myCollections = new ArrayList<>();
     private List<Document> likedDocuments = new ArrayList<>();
 
     private ProfileViewModel profileViewModel;
     private TrashDocumentAdapter trashAdapter;
     private ProfileDocumentAdapter profileDocumentAdapter;
+    private ProfileCollectionAdapter profileCollectionAdapter;
+    private ProfileDocumentAdapter collectionItemsAdapter;
+    private ListView lvCollectionItems; // Để cập nhật chiều cao sau khi load data
 
     @Nullable
     @Override
@@ -115,17 +120,27 @@ public class ProfileFragment extends Fragment {
                 profileDocumentAdapter.updateData(documents);
             }
         });
+
+        profileViewModel.getMyCollections().observe(getViewLifecycleOwner(), collections -> {
+            if (collections != null && profileCollectionAdapter != null) {
+                profileCollectionAdapter.updateData(collections);
+            }
+        });
+
+        profileViewModel.getCollectionDocuments().observe(getViewLifecycleOwner(), documents -> {
+            if (documents != null && collectionItemsAdapter != null) {
+                collectionItemsAdapter.updateData(documents);
+                if (lvCollectionItems != null) {
+                    setListViewHeightBasedOnChildren(lvCollectionItems);
+                }
+            }
+        });
     }
 
     private void prepareDummyData() {
         // Dummy Documents for other tabs
         myDocumentsDummy.add(new Document("1", "Giải tích 1", "Lê Ngọc Tú", "2024-04-20", 120, 15, 5, "", "Tài liệu giải tích 1 PTIT"));
         myDocumentsDummy.add(new Document("2", "Cấu trúc dữ liệu", "Lê Ngọc Tú", "2024-04-22", 80, 10, 2, "", "Slide bài giảng CTDL"));
-
-        // Dummy Collections
-        myCollections.add(new Collection("1", "Học tập", 5, ""));
-        myCollections.add(new Collection("2", "Tham khảo", 3, ""));
-        myCollections.add(new Collection("3", "Dự án", 2, ""));
 
         // Dummy Liked
         likedDocuments.add(new Document("3", "Kiến trúc phần mềm", "Nguyễn Văn A", "2024-04-15", 300, 50, 20, "", "Kiến trúc phần mềm"));
@@ -242,20 +257,81 @@ public class ProfileFragment extends Fragment {
     }
 
     private void showCollections() {
+        // Main container for the collections tab
+        LinearLayout mainContainer = new LinearLayout(getContext());
+        mainContainer.setOrientation(LinearLayout.VERTICAL);
+
+        // Header with "Your Collections" and "+" button
+        View headerView = LayoutInflater.from(getContext()).inflate(R.layout.layout_profile_collections_header, mainContainer, false);
+        ImageButton btnAddCollection = headerView.findViewById(R.id.btn_add_collection);
+        btnAddCollection.setOnClickListener(v -> showAddCollectionDialog());
+
+        // GridView for collections
         GridView gridView = new GridView(getContext());
         gridView.setNumColumns(2);
-        gridView.setVerticalSpacing(8);
-        gridView.setHorizontalSpacing(8);
-        ProfileCollectionAdapter adapter = new ProfileCollectionAdapter(getContext(), myCollections);
-        gridView.setAdapter(adapter);
+        gridView.setVerticalSpacing(16);
+        gridView.setHorizontalSpacing(16);
+
+        List<Collection> initialData = profileViewModel.getMyCollections().getValue();
+        if (initialData == null) initialData = new ArrayList<>();
+        profileCollectionAdapter = new ProfileCollectionAdapter(getContext(), initialData,
+                collection -> {
+                    // Confirm delete
+                    new AlertDialog.Builder(requireContext())
+                            .setTitle("Xác nhận xóa")
+                            .setMessage("Bạn có chắc chắn muốn xóa collection này không?")
+                            .setPositiveButton("Xóa", (dialog, which) -> {
+                                Toast.makeText(getContext(), "đã xóa collection có id=" + collection.getId(), Toast.LENGTH_SHORT).show();
+                            })
+                            .setNegativeButton("Hủy", null)
+                            .show();
+                },
+                collection -> {
+                    showCollectionDetail(collection);
+                }
+        );
+        gridView.setAdapter(profileCollectionAdapter);
 
         gridView.setOnItemClickListener((parent, view, position, id) -> {
-            Collection selectedCollection = myCollections.get(position);
+            Collection selectedCollection = (Collection) profileCollectionAdapter.getItem(position);
             showCollectionDetail(selectedCollection);
         });
 
-        tabContentContainer.addView(gridView);
+        mainContainer.addView(headerView);
+        mainContainer.addView(gridView);
+
+        tabContentContainer.addView(mainContainer);
         setGridViewHeightBasedOnChildren(gridView, 2);
+
+        profileViewModel.fetchMyCollections();
+    }
+
+    private void showAddCollectionDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        LayoutInflater inflater = requireActivity().getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_add_collection, null);
+        builder.setView(dialogView);
+
+        final EditText etCollectionName = dialogView.findViewById(R.id.et_collection_name);
+        Button btnCancel = dialogView.findViewById(R.id.btn_cancel);
+        Button btnAdd = dialogView.findViewById(R.id.btn_add_collection);
+
+        final AlertDialog dialog = builder.create();
+
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
+        btnAdd.setOnClickListener(v -> {
+            String collectionName = etCollectionName.getText().toString().trim();
+            if (!collectionName.isEmpty()) {
+                Toast.makeText(getContext(), "đã thêm collection", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+                // Here you would typically call a viewModel method to add the collection
+                // profileViewModel.addCollection(collectionName);
+            } else {
+                Toast.makeText(getContext(), "Please enter a name", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        dialog.show();
     }
 
     private void showCollectionDetail(Collection collection) {
@@ -264,14 +340,17 @@ public class ProfileFragment extends Fragment {
 
         ImageView btnBack = detailView.findViewById(R.id.btn_back_to_collections);
         TextView tvTitle = detailView.findViewById(R.id.tv_collection_detail_title);
-        ListView listView = detailView.findViewById(R.id.lv_collection_documents);
+        lvCollectionItems = detailView.findViewById(R.id.lv_collection_documents);
 
         tvTitle.setText(collection.getName());
 
-        // Use ProfileDocumentAdapter
-        ProfileDocumentAdapter adapter = new ProfileDocumentAdapter(getContext(), myDocumentsDummy,
+        // Khởi tạo adapter với danh sách rỗng ban đầu hoặc dữ liệu đã có trong ViewModel
+        List<Document> currentDocs = profileViewModel.getCollectionDocuments().getValue();
+        if (currentDocs == null) currentDocs = new ArrayList<>();
+
+        collectionItemsAdapter = new ProfileDocumentAdapter(getContext(), currentDocs,
                 document -> {
-                    Toast.makeText(getContext(), "đã xóa tài liệu có id=" + document.getId(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "đã xóa tài liệu có id=" + document.getId() + " ra khỏi collection ", Toast.LENGTH_SHORT).show();
                 },
                 document -> {
                     Intent intent = new Intent(getActivity(), DocumentActivity.class);
@@ -279,12 +358,20 @@ public class ProfileFragment extends Fragment {
                     startActivity(intent);
                 }
         );
-        listView.setAdapter(adapter);
+        lvCollectionItems.setAdapter(collectionItemsAdapter);
 
-        btnBack.setOnClickListener(v -> switchTab("collections"));
+        btnBack.setOnClickListener(v -> {
+            lvCollectionItems = null; // Dọn dẹp reference
+            collectionItemsAdapter = null;
+            switchTab("collections");
+        });
 
         tabContentContainer.addView(detailView);
-        setListViewHeightBasedOnChildren(listView);
+
+        // Gọi API lấy dữ liệu thực tế
+        profileViewModel.fetchCollectionItems(collection.getId());
+
+        setListViewHeightBasedOnChildren(lvCollectionItems);
     }
 
     private void showLiked() {

@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.ptithcm.documentshub.R;
 import com.ptithcm.documentshub.model.Collection;
+import com.ptithcm.documentshub.model.Document;
 
 import java.util.List;
 
@@ -20,9 +21,28 @@ public class ProfileCollectionAdapter extends BaseAdapter {
     private Context context;
     private List<Collection> collections;
 
-    public ProfileCollectionAdapter(Context context, List<Collection> collections) {
+    private OnCollectionClickListener collectionClickListener;
+    private OnItemClickListener itemClickListener;
+
+    public interface OnCollectionClickListener {
+        void onCollectionClick(Collection collection);
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(Collection collection);
+    }
+
+    public ProfileCollectionAdapter(Context context, List<Collection> collections, OnCollectionClickListener collectionClickListener, OnItemClickListener itemClickListener) {
         this.context = context;
         this.collections = collections;
+        this.collectionClickListener = collectionClickListener;
+        this.itemClickListener = itemClickListener;
+    }
+
+    public void updateData(List<Collection> newCollections) {
+        collections.clear();
+        collections.addAll(newCollections);
+        notifyDataSetChanged();
     }
 
     @Override
@@ -54,10 +74,18 @@ public class ProfileCollectionAdapter extends BaseAdapter {
         ImageButton btnDelete = convertView.findViewById(R.id.btn_delete_collection);
 
         tvName.setText(collection.getName());
-        tvCount.setText(collection.getItemCount() + " items");
-        
+        tvCount.setText(collection.getTotal_items() + " items");
+
         btnDelete.setOnClickListener(v -> {
-            Toast.makeText(context, "đã xóa collection có id=" + collection.getId(), Toast.LENGTH_SHORT).show();
+            if (collectionClickListener != null) {
+                collectionClickListener.onCollectionClick(collection);
+            }
+        });
+
+        convertView.setOnClickListener(v -> {
+            if (itemClickListener != null) {
+                itemClickListener.onItemClick(collection);
+            }
         });
 
         // In real app, use Glide to load collection.getThumbnailUrl() into ivThumbnail
@@ -65,3 +93,4 @@ public class ProfileCollectionAdapter extends BaseAdapter {
         return convertView;
     }
 }
+

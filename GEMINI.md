@@ -74,15 +74,12 @@ Code phải được đặt vào đúng package logic:
 - trả lời mặc định bằng tiếng việt
 - nếu có yêu cầu về code thì phải trả lời bằng code java và xml, không trả lời bằng pseudo code hoặc
   bất kỳ ngôn ngữ nào khác
-- nếu có yêu cầu về giao diện thì phải trả lời bằng XML, không trả lời bằng pseudo code hoặc bất kỳ
-  ngôn ngữ nào khác
 - các button muốn có hiệu ứng background thì thêm dòng `app:backgroundTint="@null"` vào file XML để
   giữ nguyên định dạng gốc của drawable
 - đọc lại file UPDATE_daytime_{hh-mm_dd-mm-yy}.md mới nhất. Để hiểu rõ hơn về những gì đã làm được
 - giải thích về các api ở file AI/config/api.md và config api ở AI/config/openapi.json
 - dự án đã xin quyền truy cập internet
 - dự án đã có sẵn một số thư viện như Retrofit, Gson, v.v. để hỗ trợ việc gọi API và xử lý dữ liệu
-- khi mà tạo nút thì phải dùng button chuẩn của android, không được dùng imageview hoặc textview để
-  tạo nút
+- khi mà tạo nút thì phải dùng button chuẩn, không được dùng imageview hoặc textview để tạo nút
 
 

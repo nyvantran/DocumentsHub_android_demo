@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -23,7 +24,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.button.MaterialButton;
 import com.ptithcm.documentshub.R;
 import com.ptithcm.documentshub.adapter.PdfPageAdapter;
+import com.ptithcm.documentshub.adapter.SelectCollectionAdapter;
 import com.ptithcm.documentshub.adapter.SimilarDocumentAdapter;
+import com.ptithcm.documentshub.model.Collection;
 import com.ptithcm.documentshub.model.Document;
 import com.ptithcm.documentshub.utils.NonScrollListView;
 import com.ptithcm.documentshub.utils.PdfCacheManager;
@@ -31,6 +34,7 @@ import com.ptithcm.documentshub.viewmodel.DocumentViewModel;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 public class DocumentActivity extends AppCompatActivity {
 
@@ -56,6 +60,7 @@ public class DocumentActivity extends AppCompatActivity {
     private SimilarDocumentAdapter similarAdapter;
     private PdfPageAdapter pdfAdapter;
     private PdfCacheManager pdfCacheManager;
+    private SelectCollectionAdapter selectCollectionAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +116,18 @@ public class DocumentActivity extends AppCompatActivity {
             if (url != null && !url.isEmpty()) {
                 startDownload(url);
                 viewModel.clearDownloadUrl(); // Prevent re-triggering on config change
+            }
+        });
+
+        viewModel.getMyCollections().observe(this, collections -> {
+            if (collections != null && selectCollectionAdapter != null) {
+                selectCollectionAdapter.updateData(collections);
+            }
+        });
+
+        viewModel.getStatusMessage().observe(this, message -> {
+            if (message != null) {
+                Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -200,6 +217,8 @@ public class DocumentActivity extends AppCompatActivity {
 
         btnLike.setOnClickListener(v -> viewModel.toggleLike());
 
+        btnSave.setOnClickListener(v -> showSelectCollectionDialog());
+
         layoutDescriptionHeader.setOnClickListener(v -> {
             isDescriptionExpanded = !isDescriptionExpanded;
             tvDescription.setVisibility(isDescriptionExpanded ? View.VISIBLE : View.GONE);
@@ -219,6 +238,29 @@ public class DocumentActivity extends AppCompatActivity {
         });
     }
 
+    private void showSelectCollectionDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_select_collection, null);
+        builder.setView(dialogView);
+
+        android.widget.ListView lvCollections = dialogView.findViewById(R.id.lv_collections);
+        List<Collection> initialData = viewModel.getMyCollections().getValue();
+        if (initialData == null) initialData = new ArrayList<>();
+
+        selectCollectionAdapter = new SelectCollectionAdapter(this, initialData);
+        lvCollections.setAdapter(selectCollectionAdapter);
+
+        AlertDialog dialog = builder.create();
+
+        lvCollections.setOnItemClickListener((parent, view, position, id) -> {
+            Collection selectedCollection = (Collection) selectCollectionAdapter.getItem(position);
+            viewModel.addItemToCollection(selectedCollection.getId());
+            dialog.dismiss();
+        });
+
+        dialog.show();
+        viewModel.fetchMyCollections();
+    }
     @Override
     protected void onDestroy() {
         super.onDestroy();
