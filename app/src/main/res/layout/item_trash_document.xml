@@ -81,19 +81,13 @@
     </LinearLayout>
 
     <ImageButton
-        android:id="@+id/iv_delete_doc"
+        android:id="@+id/btn_restore"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginEnd="8dp"
         android:padding="6dp"
-        android:src="@drawable/ic_close"
-        app:tint="@color/logout_text"
-        android:contentDescription="Delete document" />
+        android:src="@drawable/ic_history"
+        app:tint="@color/purple_logo"
+        android:contentDescription="Restore document" />
 
-<!--    <ImageButton-->
-<!--        android:id="@+id/iv_more"-->
-<!--        android:layout_width="48dp"-->
-<!--        android:layout_height="48dp"-->
-<!--        android:src="@drawable/ic_chevron_right"-->
-<!--        app:tint="@color/text_secondary" />-->
 </LinearLayout>

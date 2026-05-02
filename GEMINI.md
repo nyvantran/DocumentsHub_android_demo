@@ -69,6 +69,7 @@ Code phải được đặt vào đúng package logic:
 ## Nguyên tắc khi làm việc
 
 - sau một bước thực hiện phải giải thích những gì chuẩn bị làm
+- chỉ thực hiện yêu cầu được đưa ra, không được tự ý thêm bất kỳ tính năng nào khác
 - mỗi lần trả lời phải nói rõ những gì chuẩn bị làm trước khi thực hiện
 - trả lời mặc định bằng tiếng việt
 - nếu có yêu cầu về code thì phải trả lời bằng code java và xml, không trả lời bằng pseudo code hoặc

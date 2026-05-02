@@ -36,4 +36,16 @@ public class DocumentRepository {
     public void unlikeDocument(String id, Callback<ApiResponse<Void>> callback) {
         documentService.unlikeDocument(id).enqueue(callback);
     }
+
+    public void restoreDocument(String id, Callback<ApiResponse<Void>> callback) {
+        documentService.restoreDocument(id).enqueue(callback);
+    }
+
+    public void getDeletedDocuments(int limit, Callback<ApiResponse<List<Document>>> callback) {
+        documentService.getMyDocuments(limit, "DELETED").enqueue(callback);
+    }
+
+    public void getMyDocuments(int limit, String status, Callback<ApiResponse<List<Document>>> callback) {
+        documentService.getMyDocuments(limit, status).enqueue(callback);
+    }
 }

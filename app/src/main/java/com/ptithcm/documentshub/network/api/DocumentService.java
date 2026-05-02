@@ -8,6 +8,7 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -34,4 +35,13 @@ public interface DocumentService {
 
     @DELETE("api/v1/documents/{id}/like")
     Call<ApiResponse<Void>> unlikeDocument(@Path("id") String id);
+
+    @POST("api/v1/documents/{id}/restore")
+    Call<ApiResponse<Void>> restoreDocument(@Path("id") String id);
+
+    @GET("api/v1/users/me/documents")
+    Call<ApiResponse<List<Document>>> getMyDocuments(
+            @Query("limit") int limit,
+            @Query("statuses") String statuses
+    );
 }

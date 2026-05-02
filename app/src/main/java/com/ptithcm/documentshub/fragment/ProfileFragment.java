@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 
 import com.ptithcm.documentshub.R;
 import com.ptithcm.documentshub.activity.LoginActivity;
+import com.ptithcm.documentshub.activity.DocumentActivity;
 
 import android.widget.FrameLayout;
 import android.widget.GridView;
@@ -25,13 +26,17 @@ import android.widget.TextView;
 
 import com.ptithcm.documentshub.adapter.ProfileCollectionAdapter;
 import com.ptithcm.documentshub.adapter.ProfileDocumentAdapter;
+import com.ptithcm.documentshub.adapter.TrashDocumentAdapter;
 import com.ptithcm.documentshub.model.Collection;
 import com.ptithcm.documentshub.model.Document;
+import com.ptithcm.documentshub.viewmodel.ProfileViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.appcompat.app.AlertDialog;
 
 public class ProfileFragment extends Fragment {
 
@@ -43,16 +48,21 @@ public class ProfileFragment extends Fragment {
     private View indicatorOverview, indicatorDocuments, indicatorCollections, indicatorLiked, indicatorTrash;
     private FrameLayout tabContentContainer;
 
-    private List<Document> myDocuments = new ArrayList<>();
+    private List<Document> myDocumentsDummy = new ArrayList<>();
     private List<Collection> myCollections = new ArrayList<>();
     private List<Document> likedDocuments = new ArrayList<>();
-    private List<Document> trashDocuments = new ArrayList<>();
+
+    private ProfileViewModel profileViewModel;
+    private TrashDocumentAdapter trashAdapter;
+    private ProfileDocumentAdapter profileDocumentAdapter;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
-        
+
+        profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
+
         btnLogout = view.findViewById(R.id.btn_logout);
         btnEditProfile = view.findViewById(R.id.btn_edit_profile);
 
@@ -79,17 +89,38 @@ public class ProfileFragment extends Fragment {
 
         prepareDummyData();
         setupListeners();
-        
+        setupViewModelObservers();
+
         // Default tab
         switchTab("overview");
 
         return view;
     }
 
+    private void setupViewModelObservers() {
+        profileViewModel.getStatusMessage().observe(getViewLifecycleOwner(), message -> {
+            if (message != null) {
+                Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        profileViewModel.getDeletedDocuments().observe(getViewLifecycleOwner(), documents -> {
+            if (documents != null && trashAdapter != null) {
+                trashAdapter.updateData(documents);
+            }
+        });
+
+        profileViewModel.getMyDocuments().observe(getViewLifecycleOwner(), documents -> {
+            if (documents != null && profileDocumentAdapter != null) {
+                profileDocumentAdapter.updateData(documents);
+            }
+        });
+    }
+
     private void prepareDummyData() {
-        // Dummy Documents
-        myDocuments.add(new Document("1", "Giải tích 1", "Lê Ngọc Tú", "2024-04-20", 120, 15, 5, "", "Tài liệu giải tích 1 PTIT"));
-        myDocuments.add(new Document("2", "Cấu trúc dữ liệu", "Lê Ngọc Tú", "2024-04-22", 80, 10, 2, "", "Slide bài giảng CTDL"));
+        // Dummy Documents for other tabs
+        myDocumentsDummy.add(new Document("1", "Giải tích 1", "Lê Ngọc Tú", "2024-04-20", 120, 15, 5, "", "Tài liệu giải tích 1 PTIT"));
+        myDocumentsDummy.add(new Document("2", "Cấu trúc dữ liệu", "Lê Ngọc Tú", "2024-04-22", 80, 10, 2, "", "Slide bài giảng CTDL"));
 
         // Dummy Collections
         myCollections.add(new Collection("1", "Học tập", 5, ""));
@@ -98,9 +129,8 @@ public class ProfileFragment extends Fragment {
 
         // Dummy Liked
         likedDocuments.add(new Document("3", "Kiến trúc phần mềm", "Nguyễn Văn A", "2024-04-15", 300, 50, 20, "", "Kiến trúc phần mềm"));
-        
-        // Dummy Trash
-        trashDocuments.add(new Document("4", "Tài liệu cũ", "Lê Ngọc Tú", "2023-12-01", 10, 1, 0, "", "Cần xóa"));
+        profileViewModel.fetchDeletedDocuments();
+        profileViewModel.fetchReadyDocuments();
     }
 
     private void setupListeners() {
@@ -178,9 +208,36 @@ public class ProfileFragment extends Fragment {
     private void showDocuments() {
         ListView listView = new ListView(getContext());
         listView.setDivider(null);
-        ProfileDocumentAdapter adapter = new ProfileDocumentAdapter(getContext(), myDocuments);
-        listView.setAdapter(adapter);
+
+        List<Document> initialData = profileViewModel.getMyDocuments().getValue();
+        if (initialData == null) initialData = new ArrayList<>();
+
+        profileDocumentAdapter = new ProfileDocumentAdapter(getContext(), initialData,
+                document -> {
+                    // Confirm delete
+                    new AlertDialog.Builder(requireContext())
+                            .setTitle("Xác nhận xóa")
+                            .setMessage("Bạn có chắc chắn muốn xóa tài liệu này không?")
+                            .setPositiveButton("Xóa", (dialog, which) -> {
+                                Toast.makeText(getContext(), "đã xóa tài liệu có id=" + document.getId(), Toast.LENGTH_SHORT).show();
+                            })
+                            .setNegativeButton("Hủy", null)
+                            .show();
+                },
+                document -> {
+                    // Navigate to DocumentActivity
+                    Intent intent = new Intent(getActivity(), DocumentActivity.class);
+                    intent.putExtra("DOCUMENT_ID", document.getId());
+                    startActivity(intent);
+                }
+        );
+
+        listView.setAdapter(profileDocumentAdapter);
         tabContentContainer.addView(listView);
+
+        // Fetch fresh READY documents
+        profileViewModel.fetchReadyDocuments();
+
         setListViewHeightBasedOnChildren(listView);
     }
 
@@ -191,7 +248,7 @@ public class ProfileFragment extends Fragment {
         gridView.setHorizontalSpacing(8);
         ProfileCollectionAdapter adapter = new ProfileCollectionAdapter(getContext(), myCollections);
         gridView.setAdapter(adapter);
-        
+
         gridView.setOnItemClickListener((parent, view, position, id) -> {
             Collection selectedCollection = myCollections.get(position);
             showCollectionDetail(selectedCollection);
@@ -204,17 +261,26 @@ public class ProfileFragment extends Fragment {
     private void showCollectionDetail(Collection collection) {
         tabContentContainer.removeAllViews();
         View detailView = LayoutInflater.from(getContext()).inflate(R.layout.layout_collection_detail, tabContentContainer, false);
-        
+
         ImageView btnBack = detailView.findViewById(R.id.btn_back_to_collections);
         TextView tvTitle = detailView.findViewById(R.id.tv_collection_detail_title);
         ListView listView = detailView.findViewById(R.id.lv_collection_documents);
 
         tvTitle.setText(collection.getName());
-        
-        // Sử dụng dữ liệu mẫu cho tài liệu trong bộ sưu tập
-        ProfileDocumentAdapter adapter = new ProfileDocumentAdapter(getContext(), myDocuments);
+
+        // Use ProfileDocumentAdapter
+        ProfileDocumentAdapter adapter = new ProfileDocumentAdapter(getContext(), myDocumentsDummy,
+                document -> {
+                    Toast.makeText(getContext(), "đã xóa tài liệu có id=" + document.getId(), Toast.LENGTH_SHORT).show();
+                },
+                document -> {
+                    Intent intent = new Intent(getActivity(), DocumentActivity.class);
+                    intent.putExtra("DOCUMENT_ID", document.getId());
+                    startActivity(intent);
+                }
+        );
         listView.setAdapter(adapter);
-        
+
         btnBack.setOnClickListener(v -> switchTab("collections"));
 
         tabContentContainer.addView(detailView);
@@ -224,7 +290,16 @@ public class ProfileFragment extends Fragment {
     private void showLiked() {
         ListView listView = new ListView(getContext());
         listView.setDivider(null);
-        ProfileDocumentAdapter adapter = new ProfileDocumentAdapter(getContext(), likedDocuments);
+        ProfileDocumentAdapter adapter = new ProfileDocumentAdapter(getContext(), likedDocuments,
+                document -> {
+                    Toast.makeText(getContext(), "đã xóa tài liệu có id=" + document.getId(), Toast.LENGTH_SHORT).show();
+                },
+                document -> {
+                    Intent intent = new Intent(getActivity(), DocumentActivity.class);
+                    intent.putExtra("DOCUMENT_ID", document.getId());
+                    startActivity(intent);
+                }
+        );
         listView.setAdapter(adapter);
         tabContentContainer.addView(listView);
         setListViewHeightBasedOnChildren(listView);
@@ -233,13 +308,25 @@ public class ProfileFragment extends Fragment {
     private void showTrash() {
         ListView listView = new ListView(getContext());
         listView.setDivider(null);
-        ProfileDocumentAdapter adapter = new ProfileDocumentAdapter(getContext(), trashDocuments);
-        listView.setAdapter(adapter);
+
+        List<Document> initialData = profileViewModel.getDeletedDocuments().getValue();
+        if (initialData == null) initialData = new ArrayList<>();
+
+        trashAdapter = new TrashDocumentAdapter(getContext(), initialData,
+                document -> {
+                    profileViewModel.restoreDocument(document);
+                }
+        );
+
+        listView.setAdapter(trashAdapter);
         tabContentContainer.addView(listView);
+
+        // Fetch fresh data from API
+        profileViewModel.fetchDeletedDocuments();
+
         setListViewHeightBasedOnChildren(listView);
     }
 
-    // Helper to set ListView height based on children to work inside ScrollView
     private void setListViewHeightBasedOnChildren(ListView listView) {
         ListAdapter listAdapter = listView.getAdapter();
         if (listAdapter == null) return;
@@ -278,15 +365,10 @@ public class ProfileFragment extends Fragment {
     }
 
     private void logout() {
-        // Trong thực tế, bạn sẽ xóa session/token ở đây
         Toast.makeText(getContext(), "Đang đăng xuất...", Toast.LENGTH_SHORT).show();
-
-        // Chuyển về màn hình đăng nhập
         Intent intent = new Intent(getActivity(), LoginActivity.class);
-        // Xóa sạch stack của activity cũ để không back lại được HomeActivity
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
-        
         if (getActivity() != null) {
             getActivity().finish();
         }
