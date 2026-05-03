@@ -9,9 +9,12 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +31,7 @@ import com.ptithcm.documentshub.adapter.SelectCollectionAdapter;
 import com.ptithcm.documentshub.adapter.SimilarDocumentAdapter;
 import com.ptithcm.documentshub.model.Collection;
 import com.ptithcm.documentshub.model.Document;
+import com.ptithcm.documentshub.model.ReportReason;
 import com.ptithcm.documentshub.utils.NonScrollListView;
 import com.ptithcm.documentshub.utils.PdfCacheManager;
 import com.ptithcm.documentshub.viewmodel.DocumentViewModel;
@@ -61,6 +65,7 @@ public class DocumentActivity extends AppCompatActivity {
     private PdfPageAdapter pdfAdapter;
     private PdfCacheManager pdfCacheManager;
     private SelectCollectionAdapter selectCollectionAdapter;
+    private ArrayAdapter<ReportReason> reportReasonAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,6 +127,14 @@ public class DocumentActivity extends AppCompatActivity {
         viewModel.getMyCollections().observe(this, collections -> {
             if (collections != null && selectCollectionAdapter != null) {
                 selectCollectionAdapter.updateData(collections);
+            }
+        });
+
+        viewModel.getReportReasons().observe(this, reasons -> {
+            if (reasons != null && reportReasonAdapter != null) {
+                reportReasonAdapter.clear();
+                reportReasonAdapter.addAll(reasons);
+                reportReasonAdapter.notifyDataSetChanged();
             }
         });
 
@@ -219,6 +232,8 @@ public class DocumentActivity extends AppCompatActivity {
 
         btnSave.setOnClickListener(v -> showSelectCollectionDialog());
 
+        btnReport.setOnClickListener(v -> showReportDialog());
+
         layoutDescriptionHeader.setOnClickListener(v -> {
             isDescriptionExpanded = !isDescriptionExpanded;
             tvDescription.setVisibility(isDescriptionExpanded ? View.VISIBLE : View.GONE);
@@ -236,6 +251,37 @@ public class DocumentActivity extends AppCompatActivity {
                 viewModel.fetchDownloadUrl(String.valueOf(doc.getId()));
             }
         });
+    }
+
+    private void showReportDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_report_document, null);
+        builder.setView(dialogView);
+
+        Spinner spReason = dialogView.findViewById(R.id.sp_report_reason);
+        EditText etDescription = dialogView.findViewById(R.id.et_report_description);
+        android.widget.Button btnCancel = dialogView.findViewById(R.id.btn_cancel);
+        android.widget.Button btnSubmit = dialogView.findViewById(R.id.btn_submit_report);
+
+        reportReasonAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, new ArrayList<>());
+        reportReasonAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spReason.setAdapter(reportReasonAdapter);
+
+        AlertDialog dialog = builder.create();
+
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
+        btnSubmit.setOnClickListener(v -> {
+            ReportReason selectedReason = (ReportReason) spReason.getSelectedItem();
+            if (selectedReason != null) {
+                viewModel.reportDocument(selectedReason.getId(), etDescription.getText().toString().trim());
+                dialog.dismiss();
+            } else {
+                Toast.makeText(this, "Please select a reason", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        dialog.show();
+        viewModel.fetchReportReasons();
     }
 
     private void showSelectCollectionDialog() {

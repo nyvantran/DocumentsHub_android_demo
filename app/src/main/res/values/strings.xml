@@ -71,4 +71,9 @@
     <string name="label_password">Password</string>
     <string name="hint_create_password">Create password</string>
     <string name="btn_finish">Finish</string>
+    <string name="title_report">Report Document</string>
+    <string name="label_report_reason">Reason</string>
+    <string name="hint_report_description">Nhập mô tả chi tiết...</string>
+    <string name="btn_report">Report</string>
+    <string name="select_reason">Select a reason</string>
 </resources>

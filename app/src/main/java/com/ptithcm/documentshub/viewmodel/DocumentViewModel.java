@@ -9,8 +9,10 @@ import androidx.lifecycle.ViewModel;
 import com.ptithcm.documentshub.model.Collection;
 import com.ptithcm.documentshub.model.Document;
 import com.ptithcm.documentshub.network.ApiResponse;
+import com.ptithcm.documentshub.model.ReportReason;
 import com.ptithcm.documentshub.repository.CollectionRepository;
 import com.ptithcm.documentshub.repository.DocumentRepository;
+import com.ptithcm.documentshub.repository.ReportRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,9 +24,11 @@ import retrofit2.Response;
 public class DocumentViewModel extends ViewModel {
     private DocumentRepository repository;
     private CollectionRepository collectionRepository;
+    private ReportRepository reportRepository;
     private MutableLiveData<Document> document = new MutableLiveData<>();
     private MutableLiveData<List<Document>> similarDocuments = new MutableLiveData<>();
     private MutableLiveData<List<Collection>> myCollections = new MutableLiveData<>();
+    private MutableLiveData<List<ReportReason>> reportReasons = new MutableLiveData<>();
     private MutableLiveData<String> downloadUrl = new MutableLiveData<>();
     private MutableLiveData<String> statusMessage = new MutableLiveData<>();
     private MutableLiveData<String> errorMessage = new MutableLiveData<>();
@@ -32,6 +36,7 @@ public class DocumentViewModel extends ViewModel {
     public DocumentViewModel() {
         repository = new DocumentRepository();
         collectionRepository = new CollectionRepository();
+        reportRepository = new ReportRepository();
     }
 
     public LiveData<Document> getDocument() {
@@ -50,8 +55,51 @@ public class DocumentViewModel extends ViewModel {
         return myCollections;
     }
 
+    public LiveData<List<ReportReason>> getReportReasons() {
+        return reportReasons;
+    }
+
     public LiveData<String> getStatusMessage() {
         return statusMessage;
+    }
+
+    public void fetchReportReasons() {
+        reportRepository.getAvailableReasons(new Callback<ApiResponse<List<ReportReason>>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<List<ReportReason>>> call, Response<ApiResponse<List<ReportReason>>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    reportReasons.setValue(response.body().getData());
+                } else {
+                    errorMessage.setValue("Failed to fetch report reasons");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<List<ReportReason>>> call, Throwable t) {
+                errorMessage.setValue(t.getMessage());
+            }
+        });
+    }
+
+    public void reportDocument(int reasonId, String description) {
+        Document currentDoc = document.getValue();
+        if (currentDoc == null) return;
+
+        reportRepository.reportDocument(currentDoc.getId(), reasonId, description, new Callback<ApiResponse<Void>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<Void>> call, Response<ApiResponse<Void>> response) {
+                if (response.isSuccessful()) {
+                    statusMessage.setValue("Báo cáo đã được gửi");
+                } else {
+                    errorMessage.setValue("Không thể gửi báo cáo");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<Void>> call, Throwable t) {
+                errorMessage.setValue(t.getMessage());
+            }
+        });
     }
 
     public void fetchMyCollections() {

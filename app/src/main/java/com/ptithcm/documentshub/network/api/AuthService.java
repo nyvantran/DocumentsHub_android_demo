@@ -15,7 +15,6 @@ public interface AuthService {
     @POST("api/v1/auth/login")
     Call<ApiResponse<LoginResponse>> login(@Body LoginRequest request);
 
-    @FormUrlEncoded
     @POST("api/v1/auth/refresh")
     Call<ApiResponse<String>> refresh(@Body RefreshRequest request);
 

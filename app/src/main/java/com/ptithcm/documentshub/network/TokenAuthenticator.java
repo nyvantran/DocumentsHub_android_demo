@@ -31,6 +31,12 @@ public class TokenAuthenticator implements Authenticator {
 
     @Override
     public Request authenticate(Route route, Response response) throws IOException {
+        // Tránh loop vô tận: Nếu request hiện tại là login hoặc refresh mà vẫn bị 401 thì dừng ngay
+        if (response.request().url().encodedPath().contains("api/v1/auth/login") ||
+                response.request().url().encodedPath().contains("api/v1/auth/refresh")) {
+            return null;
+        }
+
         // Nếu bản thân API refresh cũng trả về 401, tức là refresh token cũng đã hết hạn
 //         Trả về null để hủy toàn bộ quá trình, đẩy lỗi về cho app (để văng ra màn hình Login)
         if (isRequestWithAccessToken(response) && response.priorResponse() != null && response.priorResponse().code() == 401) {
