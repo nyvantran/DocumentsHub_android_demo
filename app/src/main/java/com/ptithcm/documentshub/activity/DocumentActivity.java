@@ -32,6 +32,7 @@ import com.ptithcm.documentshub.adapter.SimilarDocumentAdapter;
 import com.ptithcm.documentshub.model.Collection;
 import com.ptithcm.documentshub.model.Document;
 import com.ptithcm.documentshub.model.ReportReason;
+import com.ptithcm.documentshub.network.ApiClient;
 import com.ptithcm.documentshub.utils.NonScrollListView;
 import com.ptithcm.documentshub.utils.PdfCacheManager;
 import com.ptithcm.documentshub.viewmodel.DocumentViewModel;
@@ -147,7 +148,7 @@ public class DocumentActivity extends AppCompatActivity {
 
     private void startDownload(String url) {
         android.util.Log.d("DocumentActivity", "Starting download with URL: " + url);
-        String downloadUrl = url.replace("localhost", "10.0.2.2");
+        String downloadUrl = url.replace("localhost", ApiClient.getBaseUrl());
         Document doc = viewModel.getDocument().getValue();
         String fileName = (doc != null ? doc.getTitle() : "document") + ".pdf";
 
@@ -176,7 +177,7 @@ public class DocumentActivity extends AppCompatActivity {
 
         // Hiển thị PDF bằng PdfRenderer
         if (document.getFile_preview_url() != null && !document.getFile_preview_url().isEmpty()) {
-            String rawUrl = document.getFile_preview_url().replace("localhost", "10.0.2.2");
+            String rawUrl = document.getFile_preview_url();
             String docId = String.valueOf(document.getId());
 
             pdfCacheManager.getPdfFile(docId, rawUrl, new PdfCacheManager.PdfDownloadListener() {
@@ -307,6 +308,7 @@ public class DocumentActivity extends AppCompatActivity {
         dialog.show();
         viewModel.fetchMyCollections();
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();

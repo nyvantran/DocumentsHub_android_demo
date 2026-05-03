@@ -1,8 +1,11 @@
 package com.ptithcm.documentshub.model;
 
+import com.ptithcm.documentshub.network.ApiClient;
+
 import java.util.List;
 
 public class Document {
+    private static final String BASE_URL = ApiClient.getBaseUrl();
     private String id;
     private String title;
     private String file_thumbnail_url;
@@ -53,7 +56,7 @@ public class Document {
     }
 
     public String getFile_preview_url() {
-        return file_preview_url;
+        return file_preview_url.replace("localhost", BASE_URL);
     }
 
     public String getStatus() {
@@ -102,7 +105,7 @@ public class Document {
     }
 
     public String getFile_thumbnail_url() {
-        return file_thumbnail_url.replace("localhost", "10.0.2.2");
+        return file_thumbnail_url.replace("localhost", BASE_URL);
     }
 
     public String getDesc() {

@@ -42,6 +42,10 @@ public class ApiClient {
 
     }
 
+    public static String getBaseUrl() {
+        return BASE_URL.replace("http://", "").replace(":8000/", "");
+    }
+
     public static synchronized void init(Context context) {
         if (instance == null) {
             instance = new ApiClient(context.getApplicationContext());
