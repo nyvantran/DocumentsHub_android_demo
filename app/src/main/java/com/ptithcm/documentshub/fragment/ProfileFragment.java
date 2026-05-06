@@ -27,11 +27,13 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.ptithcm.documentshub.adapter.ProfileCollectionAdapter;
 import com.ptithcm.documentshub.adapter.ProfileDocumentAdapter;
 import com.ptithcm.documentshub.adapter.TrashDocumentAdapter;
 import com.ptithcm.documentshub.model.Collection;
 import com.ptithcm.documentshub.model.Document;
+import com.ptithcm.documentshub.model.User;
 import com.ptithcm.documentshub.viewmodel.ProfileViewModel;
 
 import java.util.ArrayList;
@@ -45,6 +47,8 @@ public class ProfileFragment extends Fragment {
 
     private Button btnLogout;
     private Button btnEditProfile;
+    private ImageView ivAvatar;
+    private TextView tvUserName, tvUserHandle, tvBio, tvPronouns;
 
     private LinearLayout tabOverview, tabDocuments, tabCollections, tabLiked, tabTrash;
     private TextView tvTabOverview, tvTabDocuments, tvTabCollections, tvTabLiked, tvTabTrash;
@@ -66,7 +70,8 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
+        // Sử dụng Activity scope để chia sẻ ViewModel
+        profileViewModel = new ViewModelProvider(requireActivity()).get(ProfileViewModel.class);
 
         btnLogout = view.findViewById(R.id.btn_logout);
         btnEditProfile = view.findViewById(R.id.btn_edit_profile);
@@ -92,6 +97,12 @@ public class ProfileFragment extends Fragment {
 
         tabContentContainer = view.findViewById(R.id.tab_content_container);
 
+        ivAvatar = view.findViewById(R.id.iv_avatar);
+        tvUserName = view.findViewById(R.id.tv_user_name);
+        tvUserHandle = view.findViewById(R.id.tv_user_handle);
+        tvBio = view.findViewById(R.id.tv_bio);
+        tvPronouns = view.findViewById(R.id.tv_pronouns);
+
         prepareDummyData();
         setupListeners();
         setupViewModelObservers();
@@ -99,10 +110,28 @@ public class ProfileFragment extends Fragment {
         // Default tab
         switchTab("overview");
 
+
         return view;
     }
 
     private void setupViewModelObservers() {
+        profileViewModel.getUserProfile().observe(getViewLifecycleOwner(), user -> {
+            if (user != null) {
+                tvUserName.setText(user.getFullName());
+                tvUserHandle.setText("@" + user.getUsername());
+                tvBio.setText(user.getBio());
+                tvPronouns.setVisibility(View.GONE); // Ẩn pronouns vì không có trong schema API
+
+                if (user.getAvatarUrl() != null) {
+                    Glide.with(this)
+                            .load(user.getAvatarUrl())
+                            .placeholder(R.drawable.ic_avatar_placeholder)
+                            .circleCrop()
+                            .into(ivAvatar);
+                }
+            }
+        });
+
         profileViewModel.getStatusMessage().observe(getViewLifecycleOwner(), message -> {
             if (message != null) {
                 Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
@@ -146,6 +175,7 @@ public class ProfileFragment extends Fragment {
         likedDocuments.add(new Document("3", "Kiến trúc phần mềm", "Nguyễn Văn A", "2024-04-15", 300, 50, 20, "", "Kiến trúc phần mềm"));
         profileViewModel.fetchDeletedDocuments();
         profileViewModel.fetchReadyDocuments();
+        profileViewModel.fetchUserProfile();
     }
 
     private void setupListeners() {
@@ -153,6 +183,7 @@ public class ProfileFragment extends Fragment {
         btnEditProfile.setOnClickListener(v -> {
             EditProfileDialogFragment dialog = EditProfileDialogFragment.newInstance();
             dialog.show(getChildFragmentManager(), "EditProfileDialog");
+            profileViewModel.fetchUserProfile();
         });
 
         tabOverview.setOnClickListener(v -> switchTab("overview"));
@@ -213,11 +244,17 @@ public class ProfileFragment extends Fragment {
     }
 
     private void showOverview() {
-        TextView tvBio = new TextView(getContext());
-        tvBio.setText(getString(R.string.dummy_user_bio));
-        tvBio.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_secondary));
-        tvBio.setTextSize(14);
-        tabContentContainer.addView(tvBio);
+        TextView tvBioContent = new TextView(getContext());
+        profileViewModel.getUserProfile().observe(getViewLifecycleOwner(), user -> {
+            if (user != null) {
+                tvBioContent.setText(user.getBio());
+            } else {
+                tvBioContent.setText(getString(R.string.dummy_user_bio));
+            }
+        });
+        tvBioContent.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_secondary));
+        tvBioContent.setTextSize(14);
+        tabContentContainer.addView(tvBioContent);
     }
 
     private void showDocuments() {

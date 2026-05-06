@@ -76,4 +76,15 @@
     <string name="hint_report_description">Nhập mô tả chi tiết...</string>
     <string name="btn_report">Report</string>
     <string name="select_reason">Select a reason</string>
-</resources>
+
+    <string name="title_forgot_password">Forgot Password</string>
+    <string name="instruction_forgot_password">Enter your email or username to receive an OTP code to reset your password.</string>
+    <string name="hint_identity">Email or Username</string>
+    <string name="btn_send_otp">Send OTP</string>
+    <string name="instruction_reset_password">Enter the OTP code sent to your email and your new password.</string>
+    <string name="hint_otp">OTP Code</string>
+    <string name="hint_new_password">New Password</string>
+    <string name="btn_reset_password">Reset Password</string>
+    <string name="reset_password_success">Password reset successfully. Please login again.</string>
+    <string name="error_invalid_otp">Invalid OTP code.</string>
+    </resources>

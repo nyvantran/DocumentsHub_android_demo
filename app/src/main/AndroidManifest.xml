@@ -48,11 +48,7 @@
             android:exported="false" />
 
         <activity
-            android:name=".activity.SignUpOTPActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".activity.SignUpUserPasswordActivity"
+            android:name=".activity.ForgotPasswordActivity"
             android:exported="false" />
 
     </application>
