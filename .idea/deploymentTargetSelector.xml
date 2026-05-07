@@ -8,10 +8,10 @@
       </SelectionState>
       <SelectionState runConfigName="DocumentsHub">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2026-05-06T15:25:17.212917700Z">
+        <DropdownSelection timestamp="2026-05-07T02:29:08.362003100Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\tonda\.android\avd\Pixel_7a.avd" />
+              <DeviceId pluginId="PhysicalDevice" identifier="serial=42007c5fc6352547" />
             </handle>
           </Target>
         </DropdownSelection>

@@ -63,6 +63,7 @@ public class ProfileFragment extends Fragment {
     private ProfileDocumentAdapter profileDocumentAdapter;
     private ProfileCollectionAdapter profileCollectionAdapter;
     private ProfileDocumentAdapter collectionItemsAdapter;
+    private ProfileDocumentAdapter likedDocumentsAdapter;
     private ListView lvCollectionItems; // Để cập nhật chiều cao sau khi load data
 
     @Nullable
@@ -162,6 +163,12 @@ public class ProfileFragment extends Fragment {
                 if (lvCollectionItems != null) {
                     setListViewHeightBasedOnChildren(lvCollectionItems);
                 }
+            }
+        });
+
+        profileViewModel.getLikedDocuments().observe(getViewLifecycleOwner(), documents -> {
+            if (documents != null && likedDocumentsAdapter != null) {
+                likedDocumentsAdapter.updateData(documents);
             }
         });
     }
@@ -316,9 +323,9 @@ public class ProfileFragment extends Fragment {
                     // Confirm delete
                     new AlertDialog.Builder(requireContext())
                             .setTitle("Xác nhận xóa")
-                            .setMessage("Bạn có chắc chắn muốn xóa collection này không?")
+                            .setMessage("Bạn có chắc chắn muốn xóa bộ sưu tập này không?")
                             .setPositiveButton("Xóa", (dialog, which) -> {
-                                Toast.makeText(getContext(), "đã xóa collection có id=" + collection.getId(), Toast.LENGTH_SHORT).show();
+                                profileViewModel.deleteCollection(collection.getId());
                             })
                             .setNegativeButton("Hủy", null)
                             .show();
@@ -359,10 +366,8 @@ public class ProfileFragment extends Fragment {
         btnAdd.setOnClickListener(v -> {
             String collectionName = etCollectionName.getText().toString().trim();
             if (!collectionName.isEmpty()) {
-                Toast.makeText(getContext(), "đã thêm collection", Toast.LENGTH_SHORT).show();
+                profileViewModel.createCollection(collectionName);
                 dialog.dismiss();
-                // Here you would typically call a viewModel method to add the collection
-                // profileViewModel.addCollection(collectionName);
             } else {
                 Toast.makeText(getContext(), "Please enter a name", Toast.LENGTH_SHORT).show();
             }
@@ -387,7 +392,15 @@ public class ProfileFragment extends Fragment {
 
         collectionItemsAdapter = new ProfileDocumentAdapter(getContext(), currentDocs,
                 document -> {
-                    Toast.makeText(getContext(), "đã xóa tài liệu có id=" + document.getId() + " ra khỏi collection ", Toast.LENGTH_SHORT).show();
+                    // Confirm remove from collection
+                    new AlertDialog.Builder(requireContext())
+                            .setTitle("Xác nhận xóa")
+                            .setMessage("Bạn có chắc chắn muốn xóa tài liệu này ra khỏi bộ sưu tập này không?")
+                            .setPositiveButton("Xóa", (dialog, which) -> {
+                                profileViewModel.removeItemFromCollection(collection.getId(), document.getId());
+                            })
+                            .setNegativeButton("Hủy", null)
+                            .show();
                 },
                 document -> {
                     Intent intent = new Intent(getActivity(), DocumentActivity.class);
@@ -414,9 +427,21 @@ public class ProfileFragment extends Fragment {
     private void showLiked() {
         ListView listView = new ListView(getContext());
         listView.setDivider(null);
-        ProfileDocumentAdapter adapter = new ProfileDocumentAdapter(getContext(), likedDocuments,
+
+        List<Document> initialData = profileViewModel.getLikedDocuments().getValue();
+        if (initialData == null) initialData = new ArrayList<>();
+
+        likedDocumentsAdapter = new ProfileDocumentAdapter(getContext(), initialData,
                 document -> {
-                    Toast.makeText(getContext(), "đã xóa tài liệu có id=" + document.getId(), Toast.LENGTH_SHORT).show();
+                    // Confirm unlike
+                    new AlertDialog.Builder(requireContext())
+                            .setTitle("Xác nhận")
+                            .setMessage("Bạn có muốn bỏ thích tài liệu này không?")
+                            .setPositiveButton("Bỏ thích", (dialog, which) -> {
+                                profileViewModel.unlikeDocument(document.getId());
+                            })
+                            .setNegativeButton("Hủy", null)
+                            .show();
                 },
                 document -> {
                     Intent intent = new Intent(getActivity(), DocumentActivity.class);
@@ -424,8 +449,12 @@ public class ProfileFragment extends Fragment {
                     startActivity(intent);
                 }
         );
-        listView.setAdapter(adapter);
+        listView.setAdapter(likedDocumentsAdapter);
         tabContentContainer.addView(listView);
+
+        // Fetch fresh data
+        profileViewModel.fetchLikedDocuments();
+
         setListViewHeightBasedOnChildren(listView);
     }
 

@@ -1,8 +1,11 @@
 package com.ptithcm.documentshub.network.api;
 
+import com.ptithcm.documentshub.model.Document;
 import com.ptithcm.documentshub.model.User;
 import com.ptithcm.documentshub.model.UserProfileUpdateRequest;
 import com.ptithcm.documentshub.network.ApiResponse;
+
+import java.util.List;
 
 import okhttp3.MultipartBody;
 import retrofit2.Call;
@@ -23,4 +26,7 @@ public interface UserService {
     @Multipart
     @PUT("api/v1/users/me/avatar")
     Call<ApiResponse<String>> updateAvatar(@Part MultipartBody.Part avatar);
+
+    @GET("api/v1/users/me/liked_documents")
+    Call<ApiResponse<List<Document>>> getLikedDocuments();
 }

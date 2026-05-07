@@ -1,6 +1,7 @@
 package com.ptithcm.documentshub.repository;
 
 import com.ptithcm.documentshub.model.Collection;
+import com.ptithcm.documentshub.model.CollectionRequest;
 import com.ptithcm.documentshub.model.Document;
 import com.ptithcm.documentshub.network.ApiClient;
 import com.ptithcm.documentshub.network.ApiResponse;
@@ -23,11 +24,24 @@ public class CollectionRepository {
         call.enqueue(callback);
     }
 
+    public void createCollection(String name, Callback<ApiResponse<Collection>> callback) {
+        CollectionRequest request = new CollectionRequest(name);
+        collectionService.createCollection(request).enqueue(callback);
+    }
+
     public void getCollectionItems(String collectionId, Callback<ApiResponse<List<Document>>> callback) {
         collectionService.getCollectionItems(collectionId).enqueue(callback);
     }
 
     public void addItemToCollection(String collectionId, String documentId, Callback<ApiResponse<Void>> callback) {
         collectionService.addItemToCollection(collectionId, documentId).enqueue(callback);
+    }
+
+    public void deleteCollection(String collectionId, Callback<ApiResponse<Void>> callback) {
+        collectionService.deleteCollection(collectionId).enqueue(callback);
+    }
+
+    public void removeItemFromCollection(String collectionId, String documentId, Callback<ApiResponse<Void>> callback) {
+        collectionService.removeItemFromCollection(collectionId, documentId).enqueue(callback);
     }
 }

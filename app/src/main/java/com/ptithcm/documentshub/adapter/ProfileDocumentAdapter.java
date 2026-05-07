@@ -69,7 +69,7 @@ public class ProfileDocumentAdapter extends BaseAdapter {
         TextView tvOwner = convertView.findViewById(R.id.tv_doc_owner);
         TextView tvViews = convertView.findViewById(R.id.tv_doc_views);
         TextView tvLikes = convertView.findViewById(R.id.tv_doc_likes);
-        ImageButton ivDelete = convertView.findViewById(R.id.iv_delete_doc);
+        ImageButton ivDelete = convertView.findViewById(R.id.btn_delete_doc);
 
         tvTitle.setText(document.getTitle());
         tvOwner.setText("by " + document.getOwner());

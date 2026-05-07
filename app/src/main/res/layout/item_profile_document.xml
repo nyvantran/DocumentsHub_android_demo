@@ -81,7 +81,7 @@
     </LinearLayout>
 
     <ImageButton
-        android:id="@+id/iv_delete_doc"
+        android:id="@+id/btn_delete_doc"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginEnd="8dp"

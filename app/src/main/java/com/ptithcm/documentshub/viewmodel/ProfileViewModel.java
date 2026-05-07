@@ -29,6 +29,7 @@ public class ProfileViewModel extends ViewModel {
     private MutableLiveData<List<Document>> myDocuments = new MutableLiveData<>();
     private MutableLiveData<List<Collection>> myCollections = new MutableLiveData<>();
     private MutableLiveData<List<Document>> collectionDocuments = new MutableLiveData<>();
+    private MutableLiveData<List<Document>> likedDocuments = new MutableLiveData<>();
     private MutableLiveData<User> userProfile = new MutableLiveData<>();
     private MutableLiveData<ApiResponse<User>> updateProfileResult = new MutableLiveData<>();
     private MutableLiveData<ApiResponse<String>> updateAvatarResult = new MutableLiveData<>();
@@ -55,6 +56,10 @@ public class ProfileViewModel extends ViewModel {
 
     public LiveData<List<Document>> getCollectionDocuments() {
         return collectionDocuments;
+    }
+
+    public LiveData<List<Document>> getLikedDocuments() {
+        return likedDocuments;
     }
 
     public LiveData<User> getUserProfile() {
@@ -186,6 +191,28 @@ public class ProfileViewModel extends ViewModel {
         });
     }
 
+    public void createCollection(String name) {
+        isLoading.setValue(true);
+        collectionRepository.createCollection(name, new Callback<ApiResponse<Collection>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<Collection>> call, Response<ApiResponse<Collection>> response) {
+                isLoading.setValue(false);
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    statusMessage.setValue("Đã thêm bộ sưu tập mới");
+                    fetchMyCollections(); // Refresh the list
+                } else {
+                    statusMessage.setValue("Không thể tạo bộ sưu tập");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<Collection>> call, Throwable t) {
+                isLoading.setValue(false);
+                statusMessage.setValue("Lỗi: " + t.getMessage());
+            }
+        });
+    }
+
     public void fetchCollectionItems(String collectionId) {
         isLoading.setValue(true);
         collectionDocuments.setValue(new ArrayList<>()); // Clear old data
@@ -204,6 +231,93 @@ public class ProfileViewModel extends ViewModel {
             public void onFailure(Call<ApiResponse<List<Document>>> call, Throwable t) {
                 isLoading.setValue(false);
                 statusMessage.setValue("Error: " + t.getMessage());
+            }
+        });
+    }
+
+    public void deleteCollection(String collectionId) {
+        isLoading.setValue(true);
+        collectionRepository.deleteCollection(collectionId, new Callback<ApiResponse<Void>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<Void>> call, Response<ApiResponse<Void>> response) {
+                isLoading.setValue(false);
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    statusMessage.setValue("Đã xóa bộ sưu tập");
+                    fetchMyCollections(); // Refresh the list
+                } else {
+                    statusMessage.setValue("Không thể xóa bộ sưu tập");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<Void>> call, Throwable t) {
+                isLoading.setValue(false);
+                statusMessage.setValue("Lỗi: " + t.getMessage());
+            }
+        });
+    }
+
+    public void removeItemFromCollection(String collectionId, String documentId) {
+        isLoading.setValue(true);
+        collectionRepository.removeItemFromCollection(collectionId, documentId, new Callback<ApiResponse<Void>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<Void>> call, Response<ApiResponse<Void>> response) {
+                isLoading.setValue(false);
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    statusMessage.setValue("Đã xóa tài liệu ra khỏi bộ sưu tập");
+                    fetchCollectionItems(collectionId); // Refresh the list
+                } else {
+                    statusMessage.setValue("Không thể xóa tài liệu ra khỏi bộ sưu tập");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<Void>> call, Throwable t) {
+                isLoading.setValue(false);
+                statusMessage.setValue("Lỗi: " + t.getMessage());
+            }
+        });
+    }
+
+    public void fetchLikedDocuments() {
+        isLoading.setValue(true);
+        userRepository.getLikedDocuments(new Callback<ApiResponse<List<Document>>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<List<Document>>> call, Response<ApiResponse<List<Document>>> response) {
+                isLoading.setValue(false);
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    likedDocuments.setValue(response.body().getData());
+                } else {
+                    statusMessage.setValue("Failed to fetch liked documents");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<List<Document>>> call, Throwable t) {
+                isLoading.setValue(false);
+                statusMessage.setValue("Error: " + t.getMessage());
+            }
+        });
+    }
+
+    public void unlikeDocument(String documentId) {
+        isLoading.setValue(true);
+        documentRepository.unlikeDocument(documentId, new Callback<ApiResponse<Void>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<Void>> call, Response<ApiResponse<Void>> response) {
+                isLoading.setValue(false);
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    statusMessage.setValue("Đã bỏ thích tài liệu");
+                    fetchLikedDocuments(); // Refresh list
+                } else {
+                    statusMessage.setValue("Không thể bỏ thích tài liệu");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<Void>> call, Throwable t) {
+                isLoading.setValue(false);
+                statusMessage.setValue("Lỗi: " + t.getMessage());
             }
         });
     }
