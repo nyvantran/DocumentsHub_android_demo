@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.ptithcm.documentshub.model.Collection;
 import com.ptithcm.documentshub.model.Document;
+import com.ptithcm.documentshub.model.DocumentUpdateRequest;
 import com.ptithcm.documentshub.network.ApiResponse;
 import com.ptithcm.documentshub.model.ReportReason;
 import com.ptithcm.documentshub.repository.CollectionRepository;
@@ -199,6 +200,33 @@ public class DocumentViewModel extends ViewModel {
         } else {
             repository.likeDocument(docId, callback);
         }
+    }
+
+    /**
+     * Cập nhật thông tin tài liệu.
+     * Sau khi cập nhật thành công, tự động reload lại document detail.
+     *
+     * @param documentId ID tài liệu cần cập nhật
+     * @param request    Thông tin cần cập nhật (chỉ set các field thay đổi)
+     */
+    public void updateDocument(String documentId, DocumentUpdateRequest request) {
+        repository.updateDocument(documentId, request, new Callback<ApiResponse<Void>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<Void>> call, Response<ApiResponse<Void>> response) {
+                if (response.isSuccessful()) {
+                    statusMessage.setValue("Cập nhật tài liệu thành công");
+                    // Reload lại document detail để cập nhật UI
+                    fetchDocumentDetail(documentId);
+                } else {
+                    errorMessage.setValue("Không thể cập nhật tài liệu");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<Void>> call, Throwable t) {
+                errorMessage.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
     }
 
     public void fetchDocumentDetail(String id) {

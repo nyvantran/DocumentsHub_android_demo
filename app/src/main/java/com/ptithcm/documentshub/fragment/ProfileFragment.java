@@ -60,13 +60,14 @@ public class ProfileFragment extends Fragment {
     private ProfileCollectionAdapter profileCollectionAdapter;
     private ProfileDocumentAdapter collectionItemsAdapter;
     private ListView lvCollectionItems; // Để cập nhật chiều cao sau khi load data
+    private ListView lvDocuments; // Để cập nhật chiều cao sau khi xóa document
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
+        profileViewModel = new ViewModelProvider(requireActivity()).get(ProfileViewModel.class);
 
         btnLogout = view.findViewById(R.id.btn_logout);
         btnEditProfile = view.findViewById(R.id.btn_edit_profile);
@@ -118,6 +119,10 @@ public class ProfileFragment extends Fragment {
         profileViewModel.getMyDocuments().observe(getViewLifecycleOwner(), documents -> {
             if (documents != null && profileDocumentAdapter != null) {
                 profileDocumentAdapter.updateData(documents);
+                // Tính lại chiều cao ListView sau khi data thay đổi (xóa, refresh)
+                if (lvDocuments != null) {
+                    setListViewHeightBasedOnChildren(lvDocuments);
+                }
             }
         });
 
@@ -221,8 +226,8 @@ public class ProfileFragment extends Fragment {
     }
 
     private void showDocuments() {
-        ListView listView = new ListView(getContext());
-        listView.setDivider(null);
+        lvDocuments = new ListView(getContext());
+        lvDocuments.setDivider(null);
 
         List<Document> initialData = profileViewModel.getMyDocuments().getValue();
         if (initialData == null) initialData = new ArrayList<>();
@@ -232,9 +237,9 @@ public class ProfileFragment extends Fragment {
                     // Confirm delete
                     new AlertDialog.Builder(requireContext())
                             .setTitle("Xác nhận xóa")
-                            .setMessage("Bạn có chắc chắn muốn xóa tài liệu này không?")
+                            .setMessage("Bạn có chắc chắn muốn xóa tài liệu \"" + document.getTitle() + "\" không?")
                             .setPositiveButton("Xóa", (dialog, which) -> {
-                                Toast.makeText(getContext(), "đã xóa tài liệu có id=" + document.getId(), Toast.LENGTH_SHORT).show();
+                                profileViewModel.deleteDocument(document);
                             })
                             .setNegativeButton("Hủy", null)
                             .show();
@@ -247,13 +252,13 @@ public class ProfileFragment extends Fragment {
                 }
         );
 
-        listView.setAdapter(profileDocumentAdapter);
-        tabContentContainer.addView(listView);
+        lvDocuments.setAdapter(profileDocumentAdapter);
+        tabContentContainer.addView(lvDocuments);
 
         // Fetch fresh READY documents
         profileViewModel.fetchReadyDocuments();
 
-        setListViewHeightBasedOnChildren(listView);
+        setListViewHeightBasedOnChildren(lvDocuments);
     }
 
     private void showCollections() {

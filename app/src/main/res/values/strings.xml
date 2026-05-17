@@ -76,4 +76,18 @@
     <string name="hint_report_description">Nhập mô tả chi tiết...</string>
     <string name="btn_report">Report</string>
     <string name="select_reason">Select a reason</string>
+
+    <!-- Upload Document Messages -->
+    <string name="msg_uploading">Đang upload tài liệu…</string>
+    <string name="msg_upload_success">Upload tài liệu thành công!</string>
+    <string name="msg_upload_failed">Upload thất bại. Vui lòng thử lại.</string>
+    <string name="msg_select_file_first">Vui lòng chọn file trước</string>
+    <string name="msg_title_required">Tiêu đề không được để trống</string>
+    <string name="msg_load_categories_failed">Không thể tải danh mục</string>
+    <string name="no_file_selected">No file selected</string>
+
+    <!-- Edit Document Dialog -->
+    <string name="title_edit_document">Chỉnh sửa tài liệu</string>
+    <string name="msg_update_success">Cập nhật tài liệu thành công</string>
+    <string name="msg_update_failed">Không thể cập nhật tài liệu</string>
 </resources>

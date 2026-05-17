@@ -7,8 +7,10 @@ import android.graphics.pdf.PdfRenderer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -17,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewFlipper;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,9 +32,13 @@ import com.ptithcm.documentshub.R;
 import com.ptithcm.documentshub.adapter.PdfPageAdapter;
 import com.ptithcm.documentshub.adapter.SelectCollectionAdapter;
 import com.ptithcm.documentshub.adapter.SimilarDocumentAdapter;
+import com.ptithcm.documentshub.model.Category;
 import com.ptithcm.documentshub.model.Collection;
 import com.ptithcm.documentshub.model.Document;
+import com.ptithcm.documentshub.model.DocumentUpdateRequest;
 import com.ptithcm.documentshub.model.ReportReason;
+import com.ptithcm.documentshub.network.ApiResponse;
+import com.ptithcm.documentshub.repository.CategoryRepository;
 import com.ptithcm.documentshub.utils.NonScrollListView;
 import com.ptithcm.documentshub.utils.PdfCacheManager;
 import com.ptithcm.documentshub.viewmodel.DocumentViewModel;
@@ -39,6 +46,10 @@ import com.ptithcm.documentshub.viewmodel.DocumentViewModel;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class DocumentActivity extends AppCompatActivity {
 
@@ -67,12 +78,17 @@ public class DocumentActivity extends AppCompatActivity {
     private SelectCollectionAdapter selectCollectionAdapter;
     private ArrayAdapter<ReportReason> reportReasonAdapter;
 
+    // Dữ liệu cho dialog chỉnh sửa
+    private CategoryRepository categoryRepository;
+    private List<Category> categoryList = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_document);
 
         pdfCacheManager = new PdfCacheManager(this);
+        categoryRepository = new CategoryRepository();
         initViews();
         setupViewModel();
         setupListeners();
@@ -234,6 +250,9 @@ public class DocumentActivity extends AppCompatActivity {
 
         btnReport.setOnClickListener(v -> showReportDialog());
 
+        // Nút chỉnh sửa tài liệu
+        btnEditDoc.setOnClickListener(v -> showEditDocumentDialog());
+
         layoutDescriptionHeader.setOnClickListener(v -> {
             isDescriptionExpanded = !isDescriptionExpanded;
             tvDescription.setVisibility(isDescriptionExpanded ? View.VISIBLE : View.GONE);
@@ -247,11 +266,232 @@ public class DocumentActivity extends AppCompatActivity {
         btnDownload.setOnClickListener(v -> {
             Document doc = viewModel.getDocument().getValue();
             if (doc != null) {
-//                Toast.makeText(this, String.valueOf(doc.getId()), Toast.LENGTH_SHORT).show();
                 viewModel.fetchDownloadUrl(String.valueOf(doc.getId()));
             }
         });
     }
+
+    // ========== Dialog chỉnh sửa tài liệu ==========
+
+    /**
+     * Hiển thị dialog chỉnh sửa tài liệu.
+     * Pre-fill các field với dữ liệu hiện tại và load categories từ API.
+     */
+    private void showEditDocumentDialog() {
+        Document currentDoc = viewModel.getDocument().getValue();
+        if (currentDoc == null) return;
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_edit_document, null);
+        builder.setView(dialogView);
+
+        // Ánh xạ views trong dialog
+        EditText etTitle = dialogView.findViewById(R.id.et_edit_title);
+        EditText etDescription = dialogView.findViewById(R.id.et_edit_description);
+        Spinner spVisibility = dialogView.findViewById(R.id.sp_edit_visibility);
+        Spinner spCategory = dialogView.findViewById(R.id.sp_edit_category);
+        EditText etTags = dialogView.findViewById(R.id.et_edit_tags);
+        LinearLayout lnTagsContainer = dialogView.findViewById(R.id.ln_edit_tags_container);
+        android.widget.Button btnCancel = dialogView.findViewById(R.id.btn_cancel_edit);
+        android.widget.Button btnSave = dialogView.findViewById(R.id.btn_save_edit);
+
+        // Pre-fill title và description
+        etTitle.setText(currentDoc.getTitle());
+        if (currentDoc.getDesc() != null) {
+            etDescription.setText(currentDoc.getDesc());
+        }
+
+        // Setup Visibility Spinner
+        String[] visibilityOptions = {"PUBLIC", "PRIVATE"};
+        ArrayAdapter<String> visibilityAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, visibilityOptions);
+        visibilityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spVisibility.setAdapter(visibilityAdapter);
+
+        // Pre-select visibility hiện tại
+        if (currentDoc.getVisibility() != null) {
+            for (int i = 0; i < visibilityOptions.length; i++) {
+                if (visibilityOptions[i].equalsIgnoreCase(currentDoc.getVisibility())) {
+                    spVisibility.setSelection(i);
+                    break;
+                }
+            }
+        }
+
+        // Setup Category Spinner — hiển thị "Loading..." và load từ API
+        String[] loadingOptions = {"Loading..."};
+        ArrayAdapter<String> loadingAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, loadingOptions);
+        loadingAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spCategory.setAdapter(loadingAdapter);
+
+        loadCategoriesForDialog(spCategory, currentDoc.getCategory());
+
+        // Pre-fill tags
+        List<String> editTagList = new ArrayList<>();
+        if (currentDoc.getTags() != null) {
+            for (String tag : currentDoc.getTags()) {
+                editTagList.add(tag);
+                addTagViewToContainer(tag, lnTagsContainer, editTagList);
+            }
+        }
+
+        // Xử lý nhập tag mới
+        setupTagInput(etTags, lnTagsContainer, editTagList);
+
+        AlertDialog dialog = builder.create();
+
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
+
+        btnSave.setOnClickListener(v -> {
+            String newTitle = etTitle.getText().toString().trim();
+            if (newTitle.isEmpty()) {
+                etTitle.setError(getString(R.string.msg_title_required));
+                return;
+            }
+
+            // Build request chỉ với các field thay đổi
+            DocumentUpdateRequest request = new DocumentUpdateRequest();
+            request.setTitle(newTitle);
+
+            String newDesc = etDescription.getText().toString().trim();
+            request.setDesc(newDesc.isEmpty() ? null : newDesc);
+
+            request.setVisibility(visibilityOptions[spVisibility.getSelectedItemPosition()]);
+
+            // Lấy category_id nếu categories đã load
+            if (!categoryList.isEmpty()) {
+                int selectedPos = spCategory.getSelectedItemPosition();
+                if (selectedPos >= 0 && selectedPos < categoryList.size()) {
+                    request.setCategoryId(categoryList.get(selectedPos).getId());
+                }
+            }
+
+            // Tags (đã lowercase)
+            List<String> finalTags = new ArrayList<>();
+            for (String tag : editTagList) {
+                String cleaned = tag.trim().toLowerCase();
+                if (!cleaned.isEmpty()) {
+                    finalTags.add(cleaned);
+                }
+            }
+            request.setTags(finalTags);
+
+            // Gọi API update
+            viewModel.updateDocument(String.valueOf(currentDoc.getId()), request);
+            dialog.dismiss();
+        });
+
+        dialog.show();
+    }
+
+    /**
+     * Load danh sách categories từ API và cập nhật Spinner trong dialog.
+     *
+     * @param spCategory      Spinner cần cập nhật
+     * @param currentCategory Tên category hiện tại để pre-select
+     */
+    private void loadCategoriesForDialog(Spinner spCategory, String currentCategory) {
+        categoryRepository.getCategories(new Callback<ApiResponse<List<Category>>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<List<Category>>> call,
+                                   Response<ApiResponse<List<Category>>> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    categoryList = response.body().getData();
+                    List<String> categoryNames = new ArrayList<>();
+                    int selectedIndex = 0;
+
+                    for (int i = 0; i < categoryList.size(); i++) {
+                        Category cat = categoryList.get(i);
+                        categoryNames.add(cat.getName());
+                        // Tìm vị trí category hiện tại để pre-select
+                        if (currentCategory != null && cat.getName().equalsIgnoreCase(currentCategory)) {
+                            selectedIndex = i;
+                        }
+                    }
+
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(DocumentActivity.this,
+                            android.R.layout.simple_spinner_item, categoryNames);
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spCategory.setAdapter(adapter);
+                    spCategory.setSelection(selectedIndex);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<List<Category>>> call, Throwable t) {
+                Toast.makeText(DocumentActivity.this, R.string.msg_load_categories_failed, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    /**
+     * Thêm tag view (pill) vào container với nút xóa.
+     */
+    private void addTagViewToContainer(String tag, LinearLayout container, List<String> tagList) {
+        View tagView = LayoutInflater.from(this).inflate(R.layout.item_tag, container, false);
+        TextView tvTagName = tagView.findViewById(R.id.tv_tag_name);
+        ImageView ivRemoveTag = tagView.findViewById(R.id.iv_remove_tag);
+
+        tvTagName.setText(tag);
+        ivRemoveTag.setOnClickListener(v -> {
+            container.removeView(tagView);
+            tagList.remove(tag);
+        });
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        params.setMargins(0, 0, 8, 0);
+        tagView.setLayoutParams(params);
+
+        container.addView(tagView);
+    }
+
+    /**
+     * Setup logic nhập tag từ EditText (Enter, dấu cách, dấu phẩy).
+     */
+    private void setupTagInput(EditText etTags, LinearLayout container, List<String> tagList) {
+        etTags.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE ||
+                    (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
+                addTagFromInput(etTags, container, tagList);
+                return true;
+            }
+            return false;
+        });
+
+        etTags.addTextChangedListener(new android.text.TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String str = s.toString();
+                if (str.endsWith(" ") || str.endsWith(",")) {
+                    addTagFromInput(etTags, container, tagList);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(android.text.Editable s) {}
+        });
+    }
+
+    /**
+     * Thêm tag từ EditText vào danh sách và container.
+     */
+    private void addTagFromInput(EditText etTags, LinearLayout container, List<String> tagList) {
+        String tag = etTags.getText().toString().trim().replace(",", "").toLowerCase();
+        if (!tag.isEmpty() && !tagList.contains(tag)) {
+            tagList.add(tag);
+            addTagViewToContainer(tag, container, tagList);
+            etTags.setText("");
+        }
+    }
+
+    // ========== Dialog Report ==========
 
     private void showReportDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -284,6 +524,8 @@ public class DocumentActivity extends AppCompatActivity {
         viewModel.fetchReportReasons();
     }
 
+    // ========== Dialog Select Collection ==========
+
     private void showSelectCollectionDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_select_collection, null);
@@ -307,6 +549,7 @@ public class DocumentActivity extends AppCompatActivity {
         dialog.show();
         viewModel.fetchMyCollections();
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
