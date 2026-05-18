@@ -53,7 +53,7 @@ public class SimilarDocumentAdapter extends BaseAdapter {
         TextView tvSubtitle = convertView.findViewById(R.id.tv_subtitle);
 
         tvTitle.setText(document.getTitle());
-        tvSubtitle.setText(document.getAuthor() + " • " + document.getPages() + " pages");
+        tvSubtitle.setText(document.getOwner() + " • " + document.getPage_count() + " pages");
 
         return convertView;
     }

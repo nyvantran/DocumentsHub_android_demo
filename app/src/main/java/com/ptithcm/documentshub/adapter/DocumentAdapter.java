@@ -5,8 +5,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.ptithcm.documentshub.R;
 import com.ptithcm.documentshub.model.Document;
 
@@ -52,15 +55,23 @@ public class DocumentAdapter extends BaseAdapter {
         TextView tvViews = convertView.findViewById(R.id.tv_views_count);
         TextView tvDownloads = convertView.findViewById(R.id.tv_downloads_count);
         TextView tvLikes = convertView.findViewById(R.id.tv_likes_count);
+        ImageView ivThumbnail = convertView.findViewById(R.id.iv_doc_thumbnail);
 
         tvTitle.setText(document.getTitle());
-        tvAuthor.setText(document.getAuthor());
+        tvAuthor.setText(document.getOwner());
         tvVisibility.setText(document.getVisibility());
         tvTag.setText(document.getCategory());
-        tvPages.setText(document.getPages() + " pages");
-        tvViews.setText(String.valueOf(document.getViews()));
-        tvDownloads.setText(String.valueOf(document.getDownloads()));
-        tvLikes.setText(String.valueOf(document.getLikes()));
+        tvPages.setText(document.getPage_count() + " pages");
+        tvViews.setText(String.valueOf(document.getView_count()));
+        tvDownloads.setText(String.valueOf(document.getDownload_count()));
+        tvLikes.setText(String.valueOf(document.getLike_count()));
+
+        Glide.with(context)
+                .load(document.getFile_thumbnail_url())
+//                .placeholder(R.drawable.bg_logo)
+//                .error(R.drawable.bg_logo)
+                .centerCrop()
+                .into(ivThumbnail);
 
         return convertView;
     }

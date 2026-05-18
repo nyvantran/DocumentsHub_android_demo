@@ -1,21 +1,56 @@
 package com.ptithcm.documentshub.activity;
 
+import android.app.DownloadManager;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.pdf.PdfRenderer;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.ViewFlipper;
+
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.button.MaterialButton;
 import com.ptithcm.documentshub.R;
+import com.ptithcm.documentshub.adapter.PdfPageAdapter;
+import com.ptithcm.documentshub.adapter.SelectCollectionAdapter;
 import com.ptithcm.documentshub.adapter.SimilarDocumentAdapter;
+import com.ptithcm.documentshub.model.Category;
+import com.ptithcm.documentshub.model.Collection;
 import com.ptithcm.documentshub.model.Document;
+import com.ptithcm.documentshub.model.DocumentUpdateRequest;
+import com.ptithcm.documentshub.model.ReportReason;
+import com.ptithcm.documentshub.network.ApiClient;
+import com.ptithcm.documentshub.network.ApiResponse;
+import com.ptithcm.documentshub.repository.CategoryRepository;
 import com.ptithcm.documentshub.utils.NonScrollListView;
+import com.ptithcm.documentshub.utils.PdfCacheManager;
 import com.ptithcm.documentshub.viewmodel.DocumentViewModel;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class DocumentActivity extends AppCompatActivity {
 
@@ -25,11 +60,12 @@ public class DocumentActivity extends AppCompatActivity {
     private TextView tvDocumentTitle;
     private TextView tvPostBy;
     private LinearLayout layoutTags;
-    private LinearLayout btnDownload;
-    private LinearLayout btnLike;
+    private MaterialButton btnDownload;
+    private MaterialButton btnLike;
     private ImageButton btnSave;
-    private ImageButton btnHistory;
+    private ImageButton btnReport;
     private ImageButton btnEditDoc;
+    private RecyclerView rvPdfPreview;
     private LinearLayout layoutDescriptionHeader;
     private ImageView ivDescriptionArrow;
     private TextView tvDescription;
@@ -38,17 +74,26 @@ public class DocumentActivity extends AppCompatActivity {
     private boolean isDescriptionExpanded = true;
     private DocumentViewModel viewModel;
     private SimilarDocumentAdapter similarAdapter;
+    private PdfPageAdapter pdfAdapter;
+    private PdfCacheManager pdfCacheManager;
+    private SelectCollectionAdapter selectCollectionAdapter;
+    private ArrayAdapter<ReportReason> reportReasonAdapter;
+
+    // Dữ liệu cho dialog chỉnh sửa
+    private CategoryRepository categoryRepository;
+    private List<Category> categoryList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_document);
 
+        pdfCacheManager = new PdfCacheManager(this);
+        categoryRepository = new CategoryRepository();
         initViews();
         setupViewModel();
         setupListeners();
-        
-        // Giả sử nhận ID từ Intent (tạm thời để cứng "1" để test)
+
         String documentId = getIntent().getStringExtra("DOCUMENT_ID");
         if (documentId == null) documentId = "1";
         viewModel.fetchDocumentDetail(documentId);
@@ -64,28 +109,78 @@ public class DocumentActivity extends AppCompatActivity {
         btnDownload = findViewById(R.id.btn_download);
         btnLike = findViewById(R.id.btn_like);
         btnSave = findViewById(R.id.btn_save);
-        btnHistory = findViewById(R.id.btn_history);
+        btnReport = findViewById(R.id.btn_report);
         btnEditDoc = findViewById(R.id.btn_edit_doc);
+        rvPdfPreview = findViewById(R.id.rv_pdf_preview);
         layoutDescriptionHeader = findViewById(R.id.layout_description_header);
         ivDescriptionArrow = findViewById(R.id.iv_description_arrow);
         tvDescription = findViewById(R.id.tv_description);
         lvSimilarDocuments = findViewById(R.id.lv_similar_documents);
-        
-        // Khởi tạo adapter trống
+
+        rvPdfPreview.setLayoutManager(new LinearLayoutManager(this));
+
         similarAdapter = new SimilarDocumentAdapter(this, new ArrayList<>());
         lvSimilarDocuments.setAdapter(similarAdapter);
     }
 
     private void setupViewModel() {
         viewModel = new ViewModelProvider(this).get(DocumentViewModel.class);
-        
         viewModel.getDocument().observe(this, this::updateUI);
-        
         viewModel.getSimilarDocuments().observe(this, documents -> {
             if (documents != null) {
                 similarAdapter.updateData(documents);
             }
         });
+
+        // Observe official download URL
+        viewModel.getDownloadUrl().observe(this, url -> {
+            android.util.Log.d("DocumentActivity", "Download URL observed: " + url);
+            if (url != null && !url.isEmpty()) {
+                startDownload(url);
+                viewModel.clearDownloadUrl(); // Prevent re-triggering on config change
+            }
+        });
+
+        viewModel.getMyCollections().observe(this, collections -> {
+            if (collections != null && selectCollectionAdapter != null) {
+                selectCollectionAdapter.updateData(collections);
+            }
+        });
+
+        viewModel.getReportReasons().observe(this, reasons -> {
+            if (reasons != null && reportReasonAdapter != null) {
+                reportReasonAdapter.clear();
+                reportReasonAdapter.addAll(reasons);
+                reportReasonAdapter.notifyDataSetChanged();
+            }
+        });
+
+        viewModel.getStatusMessage().observe(this, message -> {
+            if (message != null) {
+                Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void startDownload(String url) {
+        android.util.Log.d("DocumentActivity", "Starting download with URL: " + url);
+        String downloadUrl = url.replace("localhost", ApiClient.getBaseUrl());
+        Document doc = viewModel.getDocument().getValue();
+        String fileName = (doc != null ? doc.getTitle() : "document") + ".pdf";
+
+        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(downloadUrl));
+        request.setTitle("Downloading " + fileName);
+        request.setDescription("DocumentHub");
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName);
+        request.setAllowedOverMetered(true);
+        request.setAllowedOverRoaming(true);
+
+        DownloadManager downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+        if (downloadManager != null) {
+            downloadManager.enqueue(request);
+            Toast.makeText(this, "Download started...", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void updateUI(Document document) {
@@ -93,29 +188,71 @@ public class DocumentActivity extends AppCompatActivity {
 
         tvDocumentTitle.setText(document.getTitle());
         tvToolbarTitle.setText(document.getTitle());
-        tvPostBy.setText(getString(R.string.label_post_by) + (document.getAuthor() != null ? document.getAuthor() : "Anonymous"));
-        tvDescription.setText(document.getDescription());
+        tvPostBy.setText(getString(R.string.label_post_by) + " " + (document.getOwner() != null ? document.getOwner() : "Anonymous"));
+        tvDescription.setText(document.getDesc());
 
-        // Cập nhật Tags (Dummy tags nếu model chưa có field tags)
-        String[] tags = {"#oop", "#dotnet", "#java", "#ejb"};
-        layoutTags.removeAllViews();
-        for (String tag : tags) {
-            View tagView = LayoutInflater.from(this).inflate(R.layout.item_tag_pill, layoutTags, false);
-            TextView tvTag = tagView.findViewById(R.id.tv_tag_name);
-            tvTag.setText(tag);
-            layoutTags.addView(tagView);
+        // Hiển thị PDF bằng PdfRenderer
+        if (document.getFile_preview_url() != null && !document.getFile_preview_url().isEmpty()) {
+            String rawUrl = document.getFile_preview_url();
+            String docId = String.valueOf(document.getId());
+
+            pdfCacheManager.getPdfFile(docId, rawUrl, new PdfCacheManager.PdfDownloadListener() {
+                @Override
+                public void onDownloadSuccess(File file) {
+                    runOnUiThread(() -> {
+                        try {
+                            if (pdfAdapter != null) {
+                                pdfAdapter.closeRenderer();
+                            }
+                            PdfRenderer renderer = PdfCacheManager.getRenderer(file);
+                            pdfAdapter = new PdfPageAdapter(renderer);
+                            rvPdfPreview.setAdapter(pdfAdapter);
+                        } catch (Exception e) {
+                            Toast.makeText(DocumentActivity.this, "Error rendering PDF", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+
+                @Override
+                public void onDownloadFailure(Exception e) {
+                    runOnUiThread(() -> Toast.makeText(DocumentActivity.this, "Failed to load PDF", Toast.LENGTH_SHORT).show());
+                }
+            });
         }
-        
-        // Cập nhật số lượng download, like nếu cần
-        TextView tvDownloadCount = btnDownload.findViewById(R.id.tv_download_count);
-        if (tvDownloadCount != null) tvDownloadCount.setText(String.valueOf(document.getDownloads()));
-        
-        TextView tvLikeCount = btnLike.findViewById(R.id.tv_like_count);
-        if (tvLikeCount != null) tvLikeCount.setText(String.valueOf(document.getLikes()));
+
+        // Cập nhật Tags
+        if (document.getTags() != null) {
+            layoutTags.removeAllViews();
+            for (String tag : document.getTags()) {
+                View tagView = LayoutInflater.from(this).inflate(R.layout.item_tag_pill, layoutTags, false);
+                TextView tvTag = tagView.findViewById(R.id.tv_tag_name);
+                tvTag.setText("#" + tag);
+                layoutTags.addView(tagView);
+            }
+        }
+
+        // Cập nhật MaterialButtons
+        btnDownload.setText(String.valueOf(document.getDownload_count()));
+        btnLike.setText(String.valueOf(document.getLike_count()));
+
+        if (document.getLiked()) {
+            btnLike.setAlpha(0.5f);
+        } else {
+            btnLike.setAlpha(1.0f);
+        }
     }
 
     private void setupListeners() {
         btnBack.setOnClickListener(v -> finish());
+
+        btnLike.setOnClickListener(v -> viewModel.toggleLike());
+
+        btnSave.setOnClickListener(v -> showSelectCollectionDialog());
+
+        btnReport.setOnClickListener(v -> showReportDialog());
+
+        // Nút chỉnh sửa tài liệu
+        btnEditDoc.setOnClickListener(v -> showEditDocumentDialog());
 
         layoutDescriptionHeader.setOnClickListener(v -> {
             isDescriptionExpanded = !isDescriptionExpanded;
@@ -126,5 +263,299 @@ public class DocumentActivity extends AppCompatActivity {
         btnSimilar.setOnClickListener(v -> {
             lvSimilarDocuments.getParent().requestChildFocus(lvSimilarDocuments, lvSimilarDocuments);
         });
+
+        btnDownload.setOnClickListener(v -> {
+            Document doc = viewModel.getDocument().getValue();
+            if (doc != null) {
+                viewModel.fetchDownloadUrl(String.valueOf(doc.getId()));
+            }
+        });
+    }
+
+    // ========== Dialog chỉnh sửa tài liệu ==========
+
+    /**
+     * Hiển thị dialog chỉnh sửa tài liệu.
+     * Pre-fill các field với dữ liệu hiện tại và load categories từ API.
+     */
+    private void showEditDocumentDialog() {
+        Document currentDoc = viewModel.getDocument().getValue();
+        if (currentDoc == null) return;
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_edit_document, null);
+        builder.setView(dialogView);
+
+        // Ánh xạ views trong dialog
+        EditText etTitle = dialogView.findViewById(R.id.et_edit_title);
+        EditText etDescription = dialogView.findViewById(R.id.et_edit_description);
+        Spinner spVisibility = dialogView.findViewById(R.id.sp_edit_visibility);
+        Spinner spCategory = dialogView.findViewById(R.id.sp_edit_category);
+        EditText etTags = dialogView.findViewById(R.id.et_edit_tags);
+        LinearLayout lnTagsContainer = dialogView.findViewById(R.id.ln_edit_tags_container);
+        android.widget.Button btnCancel = dialogView.findViewById(R.id.btn_cancel_edit);
+        android.widget.Button btnSave = dialogView.findViewById(R.id.btn_save_edit);
+
+        // Pre-fill title và description
+        etTitle.setText(currentDoc.getTitle());
+        if (currentDoc.getDesc() != null) {
+            etDescription.setText(currentDoc.getDesc());
+        }
+
+        // Setup Visibility Spinner
+        String[] visibilityOptions = {"PUBLIC", "PRIVATE"};
+        ArrayAdapter<String> visibilityAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, visibilityOptions);
+        visibilityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spVisibility.setAdapter(visibilityAdapter);
+
+        // Pre-select visibility hiện tại
+        if (currentDoc.getVisibility() != null) {
+            for (int i = 0; i < visibilityOptions.length; i++) {
+                if (visibilityOptions[i].equalsIgnoreCase(currentDoc.getVisibility())) {
+                    spVisibility.setSelection(i);
+                    break;
+                }
+            }
+        }
+
+        // Setup Category Spinner — hiển thị "Loading..." và load từ API
+        String[] loadingOptions = {"Loading..."};
+        ArrayAdapter<String> loadingAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, loadingOptions);
+        loadingAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spCategory.setAdapter(loadingAdapter);
+
+        loadCategoriesForDialog(spCategory, currentDoc.getCategory());
+
+        // Pre-fill tags
+        List<String> editTagList = new ArrayList<>();
+        if (currentDoc.getTags() != null) {
+            for (String tag : currentDoc.getTags()) {
+                editTagList.add(tag);
+                addTagViewToContainer(tag, lnTagsContainer, editTagList);
+            }
+        }
+
+        // Xử lý nhập tag mới
+        setupTagInput(etTags, lnTagsContainer, editTagList);
+
+        AlertDialog dialog = builder.create();
+
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
+
+        btnSave.setOnClickListener(v -> {
+            String newTitle = etTitle.getText().toString().trim();
+            if (newTitle.isEmpty()) {
+                etTitle.setError(getString(R.string.msg_title_required));
+                return;
+            }
+
+            // Build request chỉ với các field thay đổi
+            DocumentUpdateRequest request = new DocumentUpdateRequest();
+            request.setTitle(newTitle);
+
+            String newDesc = etDescription.getText().toString().trim();
+            request.setDesc(newDesc.isEmpty() ? null : newDesc);
+
+            request.setVisibility(visibilityOptions[spVisibility.getSelectedItemPosition()]);
+
+            // Lấy category_id nếu categories đã load
+            if (!categoryList.isEmpty()) {
+                int selectedPos = spCategory.getSelectedItemPosition();
+                if (selectedPos >= 0 && selectedPos < categoryList.size()) {
+                    request.setCategoryId(categoryList.get(selectedPos).getId());
+                }
+            }
+
+            // Tags (đã lowercase)
+            List<String> finalTags = new ArrayList<>();
+            for (String tag : editTagList) {
+                String cleaned = tag.trim().toLowerCase();
+                if (!cleaned.isEmpty()) {
+                    finalTags.add(cleaned);
+                }
+            }
+            request.setTags(finalTags);
+
+            // Gọi API update
+            viewModel.updateDocument(String.valueOf(currentDoc.getId()), request);
+            dialog.dismiss();
+        });
+
+        dialog.show();
+    }
+
+    /**
+     * Load danh sách categories từ API và cập nhật Spinner trong dialog.
+     *
+     * @param spCategory      Spinner cần cập nhật
+     * @param currentCategory Tên category hiện tại để pre-select
+     */
+    private void loadCategoriesForDialog(Spinner spCategory, String currentCategory) {
+        categoryRepository.getCategories(new Callback<ApiResponse<List<Category>>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<List<Category>>> call,
+                                   Response<ApiResponse<List<Category>>> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    categoryList = response.body().getData();
+                    List<String> categoryNames = new ArrayList<>();
+                    int selectedIndex = 0;
+
+                    for (int i = 0; i < categoryList.size(); i++) {
+                        Category cat = categoryList.get(i);
+                        categoryNames.add(cat.getName());
+                        // Tìm vị trí category hiện tại để pre-select
+                        if (currentCategory != null && cat.getName().equalsIgnoreCase(currentCategory)) {
+                            selectedIndex = i;
+                        }
+                    }
+
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(DocumentActivity.this,
+                            android.R.layout.simple_spinner_item, categoryNames);
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spCategory.setAdapter(adapter);
+                    spCategory.setSelection(selectedIndex);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<List<Category>>> call, Throwable t) {
+                Toast.makeText(DocumentActivity.this, R.string.msg_load_categories_failed, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    /**
+     * Thêm tag view (pill) vào container với nút xóa.
+     */
+    private void addTagViewToContainer(String tag, LinearLayout container, List<String> tagList) {
+        View tagView = LayoutInflater.from(this).inflate(R.layout.item_tag, container, false);
+        TextView tvTagName = tagView.findViewById(R.id.tv_tag_name);
+        ImageView ivRemoveTag = tagView.findViewById(R.id.iv_remove_tag);
+
+        tvTagName.setText(tag);
+        ivRemoveTag.setOnClickListener(v -> {
+            container.removeView(tagView);
+            tagList.remove(tag);
+        });
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        params.setMargins(0, 0, 8, 0);
+        tagView.setLayoutParams(params);
+
+        container.addView(tagView);
+    }
+
+    /**
+     * Setup logic nhập tag từ EditText (Enter, dấu cách, dấu phẩy).
+     */
+    private void setupTagInput(EditText etTags, LinearLayout container, List<String> tagList) {
+        etTags.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE ||
+                    (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
+                addTagFromInput(etTags, container, tagList);
+                return true;
+            }
+            return false;
+        });
+
+        etTags.addTextChangedListener(new android.text.TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String str = s.toString();
+                if (str.endsWith(" ") || str.endsWith(",")) {
+                    addTagFromInput(etTags, container, tagList);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(android.text.Editable s) {}
+        });
+    }
+
+    /**
+     * Thêm tag từ EditText vào danh sách và container.
+     */
+    private void addTagFromInput(EditText etTags, LinearLayout container, List<String> tagList) {
+        String tag = etTags.getText().toString().trim().replace(",", "").toLowerCase();
+        if (!tag.isEmpty() && !tagList.contains(tag)) {
+            tagList.add(tag);
+            addTagViewToContainer(tag, container, tagList);
+            etTags.setText("");
+        }
+    }
+
+    // ========== Dialog Report ==========
+
+    private void showReportDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_report_document, null);
+        builder.setView(dialogView);
+
+        Spinner spReason = dialogView.findViewById(R.id.sp_report_reason);
+        EditText etDescription = dialogView.findViewById(R.id.et_report_description);
+        android.widget.Button btnCancel = dialogView.findViewById(R.id.btn_cancel);
+        android.widget.Button btnSubmit = dialogView.findViewById(R.id.btn_submit_report);
+
+        reportReasonAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, new ArrayList<>());
+        reportReasonAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spReason.setAdapter(reportReasonAdapter);
+
+        AlertDialog dialog = builder.create();
+
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
+        btnSubmit.setOnClickListener(v -> {
+            ReportReason selectedReason = (ReportReason) spReason.getSelectedItem();
+            if (selectedReason != null) {
+                viewModel.reportDocument(selectedReason.getId(), etDescription.getText().toString().trim());
+                dialog.dismiss();
+            } else {
+                Toast.makeText(this, "Please select a reason", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        dialog.show();
+        viewModel.fetchReportReasons();
+    }
+
+    // ========== Dialog Select Collection ==========
+
+    private void showSelectCollectionDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_select_collection, null);
+        builder.setView(dialogView);
+
+        android.widget.ListView lvCollections = dialogView.findViewById(R.id.lv_collections);
+        List<Collection> initialData = viewModel.getMyCollections().getValue();
+        if (initialData == null) initialData = new ArrayList<>();
+
+        selectCollectionAdapter = new SelectCollectionAdapter(this, initialData);
+        lvCollections.setAdapter(selectCollectionAdapter);
+
+        AlertDialog dialog = builder.create();
+
+        lvCollections.setOnItemClickListener((parent, view, position, id) -> {
+            Collection selectedCollection = (Collection) selectCollectionAdapter.getItem(position);
+            viewModel.addItemToCollection(selectedCollection.getId());
+            dialog.dismiss();
+        });
+
+        dialog.show();
+        viewModel.fetchMyCollections();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (pdfAdapter != null) {
+            pdfAdapter.closeRenderer();
+        }
     }
 }

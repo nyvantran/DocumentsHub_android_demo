@@ -8,7 +8,7 @@
     <string name="dont_have_account">Don\'t have an account? </string>
     <string name="sign_up_here">Sign up here</string>
     <string name="show_password">Show</string>
-    
+
     <string name="hint_search">Search documents...</string>
     <string name="trending_in">Trending in </string>
     <string name="see_all">See all</string>
@@ -58,4 +58,46 @@
     <string name="dummy_zoom_percent">100%</string>
     <string name="dummy_views">0</string>
     <string name="dummy_likes">0</string>
+
+    <string name="title_register">Register Account</string>
+    <string name="label_email">Email</string>
+    <string name="btn_next">Next \u2192</string>
+    <string name="already_have_account">Already have an account? </string>
+    <string name="login">Login</string>
+    <string name="otp_message">We just sent an OTP to your email to verify registration</string>
+    <string name="label_otp">OTP</string>
+    <string name="label_username">Username</string>
+    <string name="note_register_success">Note: After register success, you can login by username or email</string>
+    <string name="label_password">Password</string>
+    <string name="hint_create_password">Create password</string>
+    <string name="btn_finish">Finish</string>
+    <string name="title_report">Report Document</string>
+    <string name="label_report_reason">Reason</string>
+    <string name="hint_report_description">Nhập mô tả chi tiết...</string>
+    <string name="btn_report">Report</string>
+    <string name="select_reason">Select a reason</string>
+
+    <string name="title_forgot_password">Forgot Password</string>
+    <string name="instruction_forgot_password">Enter your email or username to receive an OTP code to reset your password.</string>
+    <string name="hint_identity">Email or Username</string>
+    <string name="btn_send_otp">Send OTP</string>
+    <string name="instruction_reset_password">Enter the OTP code sent to your email and your new password.</string>
+    <string name="hint_otp">OTP Code</string>
+    <string name="hint_new_password">New Password</string>
+    <string name="btn_reset_password">Reset Password</string>
+    <string name="reset_password_success">Password reset successfully. Please login again.</string>
+    <string name="error_invalid_otp">Invalid OTP code.</string>
+    <!-- Upload Document Messages -->
+    <string name="msg_uploading">Đang upload tài liệu…</string>
+    <string name="msg_upload_success">Upload tài liệu thành công!</string>
+    <string name="msg_upload_failed">Upload thất bại. Vui lòng thử lại.</string>
+    <string name="msg_select_file_first">Vui lòng chọn file trước</string>
+    <string name="msg_title_required">Tiêu đề không được để trống</string>
+    <string name="msg_load_categories_failed">Không thể tải danh mục</string>
+    <string name="no_file_selected">No file selected</string>
+
+    <!-- Edit Document Dialog -->
+    <string name="title_edit_document">Chỉnh sửa tài liệu</string>
+    <string name="msg_update_success">Cập nhật tài liệu thành công</string>
+    <string name="msg_update_failed">Không thể cập nhật tài liệu</string>
 </resources>

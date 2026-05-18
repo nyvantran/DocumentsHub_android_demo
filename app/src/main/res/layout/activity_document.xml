@@ -20,10 +20,10 @@
             android:layout_height="40dp"
             android:background="@drawable/bg_circle_button"
             android:src="@drawable/ic_back"
+            app:backgroundTint="@null"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:backgroundTint="@null" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tv_toolbar_title"
@@ -133,67 +133,55 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <LinearLayout
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_download"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="12dp"
+                    android:layout_marginEnd="8dp"
                     android:background="@drawable/bg_rounded_action"
-                    android:gravity="center"
-                    android:orientation="horizontal">
+                    android:minWidth="0dp"
+                    android:paddingHorizontal="12dp"
+                    android:text="0"
+                    android:textAllCaps="false"
+                    android:textColor="@color/text_secondary"
+                    app:backgroundTint="@null"
+                    app:icon="@drawable/ic_download"
+                    app:iconPadding="6dp"
+                    app:iconTint="@color/text_secondary" />
 
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@drawable/ic_download" />
-
-                    <TextView
-                        android:id="@+id/tv_download_count"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="6dp"
-                        android:text="0"
-                        android:textColor="@color/text_secondary" />
-                </LinearLayout>
-
-                <LinearLayout
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_like"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="12dp"
+                    android:layout_marginEnd="8dp"
                     android:background="@drawable/bg_rounded_action"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@drawable/ic_like" />
-
-                    <TextView
-                        android:id="@+id/tv_like_count"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="6dp"
-                        android:text="0"
-                        android:textColor="@color/text_secondary" />
-                </LinearLayout>
+                    android:minWidth="0dp"
+                    android:paddingHorizontal="12dp"
+                    android:text="0"
+                    android:textAllCaps="false"
+                    android:textColor="@color/text_secondary"
+                    app:backgroundTint="@null"
+                    app:icon="@drawable/ic_like"
+                    app:iconPadding="6dp"
+                    app:iconTint="@color/text_secondary" />
 
                 <ImageButton
                     android:id="@+id/btn_save"
                     android:layout_width="44dp"
                     android:layout_height="44dp"
-                    android:layout_marginEnd="12dp"
+                    android:layout_marginEnd="8dp"
                     android:background="@drawable/bg_rounded_action"
                     android:src="@drawable/ic_bookmark"
                     app:backgroundTint="@null" />
 
                 <ImageButton
-                    android:id="@+id/btn_history"
+                    android:id="@+id/btn_report"
                     android:layout_width="44dp"
                     android:layout_height="44dp"
                     android:background="@drawable/bg_rounded_action"
-                    android:src="@drawable/ic_history"
+                    android:src="@drawable/ic_close"
                     app:backgroundTint="@null" />
 
                 <View
@@ -245,108 +233,19 @@
                 android:textColor="@color/text_secondary"
                 android:textSize="14sp" />
 
-            <!-- Preview Section -->
+            <!-- PDF Preview Section -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="600dp"
                 android:layout_marginTop="24dp"
                 app:cardCornerRadius="16dp"
-                app:cardElevation="0dp">
+                app:cardElevation="2dp">
 
-                <LinearLayout
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_pdf_preview"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_preview_card"
-                    android:orientation="vertical">
-
-                    <!-- Preview Toolbar -->
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:background="@color/bg_preview"
-                        android:paddingHorizontal="16dp">
-
-                        <ImageView
-                            android:id="@+id/iv_preview_menu"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:layout_centerVertical="true"
-                            android:src="@drawable/ic_close"
-                            app:tint="@color/white" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerVertical="true"
-                            android:layout_marginStart="12dp"
-                            android:layout_toEndOf="@+id/iv_preview_menu"
-                            android:text="preview"
-                            android:textColor="@color/white"
-                            android:textSize="14sp" />
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:layout_centerVertical="true"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="1 / 11"
-                                android:textColor="@color/white"
-                                android:textSize="14sp" />
-
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="24dp"
-                                android:layout_marginStart="16dp"
-                                android:background="@drawable/bg_preview_card"
-                                android:gravity="center"
-                                android:orientation="horizontal"
-                                android:paddingHorizontal="8dp">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="-"
-                                    android:textColor="@color/white"
-                                    android:textSize="18sp" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginHorizontal="12dp"
-                                    android:text="100%"
-                                    android:textColor="@color/white"
-                                    android:textSize="12sp" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="+"
-                                    android:textColor="@color/white"
-                                    android:textSize="18sp" />
-                            </LinearLayout>
-                        </LinearLayout>
-                    </RelativeLayout>
-
-                    <!-- Preview Content Placeholder -->
-                    <FrameLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="350dp"
-                        android:padding="20dp">
-
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:scaleType="fitCenter"
-                            android:src="@drawable/ic_book"
-                            app:tint="@color/white" />
-                    </FrameLayout>
-                </LinearLayout>
+                    android:layout_height="match_parent"
+                    android:scrollbars="vertical" />
             </androidx.cardview.widget.CardView>
 
             <!-- Similar Documents Section -->

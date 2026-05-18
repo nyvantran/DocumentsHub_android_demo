@@ -36,8 +36,9 @@ Code phải được đặt vào đúng package logic:
 - `com.ptithcm.documentshub.activity`: Chứa các Activities
 - `com.ptithcm.documentshub.fragment`: Chứa các Fragments
 - `com.ptithcm.documentshub.adapter`: Chứa các chứa các Adapter cho Listview hoặc Girdview.
-- `com.ptithcm.documentshub.model`: Chứa các đối tượng định nghĩa từ API 
-- `com.ptithcm.documentshub.viewmodel`: Chứa các ViewModel để xử lý logic nghiệp vụ và dữ liệu cho UI.
+- `com.ptithcm.documentshub.model`: Chứa các đối tượng định nghĩa từ API
+- `com.ptithcm.documentshub.viewmodel`: Chứa các ViewModel để xử lý logic nghiệp vụ và dữ liệu cho
+  UI.
 - `com.ptithcm.documentshub.repository`: Logic gọi API theo kiến trúc DAO
 - `com.ptithcm.documentshub.utils`: Các hàm helpers (format ngày tháng, check permission).
 - `com.ptithcm.documentshub.network`: Chứa các cấu hình kết nối API (có thể sử dụng Retrofit).
@@ -68,14 +69,17 @@ Code phải được đặt vào đúng package logic:
 ## Nguyên tắc khi làm việc
 
 - sau một bước thực hiện phải giải thích những gì chuẩn bị làm
+- chỉ thực hiện yêu cầu được đưa ra, không được tự ý thêm bất kỳ tính năng nào khác
 - mỗi lần trả lời phải nói rõ những gì chuẩn bị làm trước khi thực hiện
 - trả lời mặc định bằng tiếng việt
 - nếu có yêu cầu về code thì phải trả lời bằng code java và xml, không trả lời bằng pseudo code hoặc
   bất kỳ ngôn ngữ nào khác
-- nếu có yêu cầu về giao diện thì phải trả lời bằng XML, không trả lời bằng pseudo code hoặc bất kỳ
-  ngôn ngữ nào khác
 - các button muốn có hiệu ứng background thì thêm dòng `app:backgroundTint="@null"` vào file XML để
   giữ nguyên định dạng gốc của drawable
 - đọc lại file UPDATE_daytime_{hh-mm_dd-mm-yy}.md mới nhất. Để hiểu rõ hơn về những gì đã làm được
-- giải thích về các api ở file AI/config/api.md và config api ở AI/config/openapi.json 
+- giải thích về các api ở file AI/config/api.md và config api ở AI/config/openapi.json
+- dự án đã xin quyền truy cập internet
+- dự án đã có sẵn một số thư viện như Retrofit, Gson, v.v. để hỗ trợ việc gọi API và xử lý dữ liệu
+- khi mà tạo nút thì phải dùng button chuẩn, không được dùng imageview hoặc textview để tạo nút
+
 
