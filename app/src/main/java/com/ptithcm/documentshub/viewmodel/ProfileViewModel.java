@@ -365,4 +365,55 @@ public class ProfileViewModel extends ViewModel {
             }
         });
     }
+
+    /**
+     * Xóa mềm tài liệu (soft delete — chuyển vào thùng rác).
+     * Sử dụng optimistic update: xóa khỏi list ngay lập tức để UI cập nhật tức thì,
+     * sau đó gọi API. Nếu API thất bại, thêm lại item vào list.
+     *
+     * @param document Tài liệu cần xóa
+     */
+    public void deleteDocument(Document document) {
+        // Optimistic update: xóa khỏi list local ngay lập tức
+        List<Document> currentList = myDocuments.getValue();
+        if (currentList != null) {
+            List<Document> updatedList = new ArrayList<>(currentList);
+            updatedList.remove(document);
+            myDocuments.setValue(updatedList);
+        }
+
+        // Gọi API xóa ở background
+        documentRepository.deleteDocument(document.getId(), new Callback<ApiResponse<Void>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<Void>> call, Response<ApiResponse<Void>> response) {
+                if (response.isSuccessful()) {
+                    statusMessage.setValue("Đã xóa tài liệu thành công");
+                } else {
+                    // API thất bại: thêm lại item vào list
+                    restoreItemToList(document);
+                    statusMessage.setValue("Không thể xóa tài liệu");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<Void>> call, Throwable t) {
+                // Lỗi kết nối: thêm lại item vào list
+                restoreItemToList(document);
+                statusMessage.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
+
+    /**
+     * Thêm lại document vào danh sách khi API xóa thất bại.
+     */
+    private void restoreItemToList(Document document) {
+        List<Document> currentList = myDocuments.getValue();
+        if (currentList == null) {
+            currentList = new ArrayList<>();
+        }
+        List<Document> restoredList = new ArrayList<>(currentList);
+        restoredList.add(document);
+        myDocuments.setValue(restoredList);
+    }
 }

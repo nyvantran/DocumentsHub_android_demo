@@ -8,7 +8,7 @@
     <string name="dont_have_account">Don\'t have an account? </string>
     <string name="sign_up_here">Sign up here</string>
     <string name="show_password">Show</string>
-    
+
     <string name="hint_search">Search documents...</string>
     <string name="trending_in">Trending in </string>
     <string name="see_all">See all</string>
@@ -87,4 +87,17 @@
     <string name="btn_reset_password">Reset Password</string>
     <string name="reset_password_success">Password reset successfully. Please login again.</string>
     <string name="error_invalid_otp">Invalid OTP code.</string>
-    </resources>
+    <!-- Upload Document Messages -->
+    <string name="msg_uploading">Đang upload tài liệu…</string>
+    <string name="msg_upload_success">Upload tài liệu thành công!</string>
+    <string name="msg_upload_failed">Upload thất bại. Vui lòng thử lại.</string>
+    <string name="msg_select_file_first">Vui lòng chọn file trước</string>
+    <string name="msg_title_required">Tiêu đề không được để trống</string>
+    <string name="msg_load_categories_failed">Không thể tải danh mục</string>
+    <string name="no_file_selected">No file selected</string>
+
+    <!-- Edit Document Dialog -->
+    <string name="title_edit_document">Chỉnh sửa tài liệu</string>
+    <string name="msg_update_success">Cập nhật tài liệu thành công</string>
+    <string name="msg_update_failed">Không thể cập nhật tài liệu</string>
+</resources>
