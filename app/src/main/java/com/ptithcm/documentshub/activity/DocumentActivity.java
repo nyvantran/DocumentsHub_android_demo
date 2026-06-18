@@ -56,7 +56,7 @@ public class DocumentActivity extends AppCompatActivity {
 
     private ImageButton btnBack;
     private TextView tvToolbarTitle;
-    private TextView btnSimilar;
+//    private TextView btnSimilar;
     private TextView tvDocumentTitle;
     private TextView tvPostBy;
     private LinearLayout layoutTags;
@@ -73,7 +73,7 @@ public class DocumentActivity extends AppCompatActivity {
 
     private boolean isDescriptionExpanded = true;
     private DocumentViewModel viewModel;
-    private SimilarDocumentAdapter similarAdapter;
+//    private SimilarDocumentAdapter similarAdapter;
     private PdfPageAdapter pdfAdapter;
     private PdfCacheManager pdfCacheManager;
     private SelectCollectionAdapter selectCollectionAdapter;
@@ -102,7 +102,7 @@ public class DocumentActivity extends AppCompatActivity {
     private void initViews() {
         btnBack = findViewById(R.id.btn_back);
         tvToolbarTitle = findViewById(R.id.tv_toolbar_title);
-        btnSimilar = findViewById(R.id.btn_similar);
+//        btnSimilar = findViewById(R.id.btn_similar);
         tvDocumentTitle = findViewById(R.id.tv_document_title);
         tvPostBy = findViewById(R.id.tv_post_by);
         layoutTags = findViewById(R.id.layout_tags);
@@ -115,12 +115,12 @@ public class DocumentActivity extends AppCompatActivity {
         layoutDescriptionHeader = findViewById(R.id.layout_description_header);
         ivDescriptionArrow = findViewById(R.id.iv_description_arrow);
         tvDescription = findViewById(R.id.tv_description);
-        lvSimilarDocuments = findViewById(R.id.lv_similar_documents);
+//        lvSimilarDocuments = findViewById(R.id.lv_similar_documents);
 
         rvPdfPreview.setLayoutManager(new LinearLayoutManager(this));
 
-        similarAdapter = new SimilarDocumentAdapter(this, new ArrayList<>());
-        lvSimilarDocuments.setAdapter(similarAdapter);
+//        similarAdapter = new SimilarDocumentAdapter(this, new ArrayList<>());
+//        lvSimilarDocuments.setAdapter(similarAdapter);
     }
 
     private void setupViewModel() {
@@ -128,7 +128,7 @@ public class DocumentActivity extends AppCompatActivity {
         viewModel.getDocument().observe(this, this::updateUI);
         viewModel.getSimilarDocuments().observe(this, documents -> {
             if (documents != null) {
-                similarAdapter.updateData(documents);
+//                similarAdapter.updateData(documents);
             }
         });
 
@@ -260,9 +260,9 @@ public class DocumentActivity extends AppCompatActivity {
             ivDescriptionArrow.setRotation(isDescriptionExpanded ? 0 : 180);
         });
 
-        btnSimilar.setOnClickListener(v -> {
-            lvSimilarDocuments.getParent().requestChildFocus(lvSimilarDocuments, lvSimilarDocuments);
-        });
+//        btnSimilar.setOnClickListener(v -> {
+//            lvSimilarDocuments.getParent().requestChildFocus(lvSimilarDocuments, lvSimilarDocuments);
+//        });
 
         btnDownload.setOnClickListener(v -> {
             Document doc = viewModel.getDocument().getValue();
