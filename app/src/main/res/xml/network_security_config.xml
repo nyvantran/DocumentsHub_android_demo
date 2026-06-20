@@ -3,7 +3,7 @@
     <domain-config cleartextTrafficPermitted="true">
         <!-- Cho phép kết nối HTTP đến localhost của máy tính qua IP của Emulator -->
         <domain includeSubdomains="true">10.0.2.2</domain>
-        <domain includeSubdomains="true">192.168.1.21</domain>
+        <domain includeSubdomains="true">192.168.1.18</domain>
         <!-- Cho phép localhost nếu bạn chạy trên thiết bị thật qua proxy hoặc môi trường local khác -->
         <domain includeSubdomains="true">localhost</domain>
     </domain-config>
